@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:title="+"
+        android:id="@+id/addStudentBtn"
+        android:icon="@android:drawable/ic_menu_add"
+        android:showAsAction="ifRoom">
+    </item>
+    <item android:title="edit"
+        android:id="@+id/editStudentBtn"
+        android:icon="@android:drawable/ic_menu_edit"
+        android:showAsAction="ifRoom"
+        android:visible="false">
+    </item>
+    <item android:title="Sign Out"
+        android:id="@+id/sign_out_btn"
+        android:showAsAction="ifRoom"
+        android:visible="false">
+    </item>
+</menu>
