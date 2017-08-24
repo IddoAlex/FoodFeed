@@ -1,10 +1,11 @@
-package colman.iddo.foodfeed;
+package colman.iddo.foodfeed.activities;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
+import colman.iddo.foodfeed.R;
 
 import com.google.firebase.auth.FirebaseAuth;
 

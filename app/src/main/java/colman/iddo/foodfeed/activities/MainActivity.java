@@ -1,7 +1,7 @@
-package colman.iddo.foodfeed;
+package colman.iddo.foodfeed.activities;
 
-import android.app.Activity;
 import android.os.Bundle;
+import colman.iddo.foodfeed.R;
 
 public class MainActivity extends BaseActivity {
 
