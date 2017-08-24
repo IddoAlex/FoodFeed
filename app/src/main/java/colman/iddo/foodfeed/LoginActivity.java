@@ -118,7 +118,7 @@ public class LoginActivity extends  BaseActivity implements
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                            Toast.makeText(LoginActivity.this, "Authentication failed.",
+                            Toast.makeText(LoginActivity.this, task.getException().getMessage(),
                                     Toast.LENGTH_SHORT).show();
                             //updateUI(null);
                         }
@@ -132,7 +132,6 @@ public class LoginActivity extends  BaseActivity implements
     }
 
     private void onLoginSuccess() {
-        /*
         Intent i = new Intent(this, MainActivity.class);
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
@@ -140,7 +139,6 @@ public class LoginActivity extends  BaseActivity implements
                 Toast.LENGTH_LONG).show();
 
         startActivity(i);
-        */
     }
 
     private boolean validateForm() {
