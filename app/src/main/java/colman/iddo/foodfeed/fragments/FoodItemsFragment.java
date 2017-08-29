@@ -1,42 +1,83 @@
 package colman.iddo.foodfeed.fragments;
 
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.ListView;
 
 import java.util.LinkedList;
 import java.util.List;
 
 import colman.iddo.foodfeed.R;
-import colman.iddo.foodfeed.model.FoodListItem;
+import colman.iddo.foodfeed.model.FoodItem;
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link FoodListItemsFragment.OnFragmentInteractionListener} interface
+ * {@link FoodItemsFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
  */
-public class FoodListItemsFragment extends Fragment {
+public class FoodItemsFragment extends Fragment {
+
+    static final int REQUEST_WRITE_STORAGE = 2;
 
     private OnFragmentInteractionListener mListener;
 
-    private List<FoodListItem> data = new LinkedList<>();
+    private List<FoodItem> data = new LinkedList<>();
 
-    public FoodListItemsFragment() {
+    public FoodItemsFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_food_list_items, container, false);
+        View contentView = inflater.inflate(R.layout.fragment_food_items, container, false);
+
+        ListView list = contentView.findViewById(R.id.fliList);
+
+        FoodItemsAdapter adapter = new FoodItemsAdapter(getActivity());
+
+        list.setAdapter(adapter);
+
+        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                /*
+                // TODO: change accordingly
+                StudentDetailsFragment studentDetailsFragment = new StudentDetailsFragment();
+                Bundle myBundle = new Bundle();
+                myBundle.putString("STID", data.get(position).id);
+                studentDetailsFragment.setArguments(myBundle);
+                getFragmentManager().beginTransaction()
+                        .replace(((ViewGroup) getView().getParent()).getId(), studentDetailsFragment).addToBackStack(null).commit();
+                */
+            }
+        });
+
+        // TODO: Load foodItems and set list
+
+
+        // App permissions
+        boolean hasPermission = (ContextCompat.checkSelfPermission(getActivity(),
+                android.Manifest.permission.WRITE_EXTERNAL_STORAGE) ==
+                PackageManager.PERMISSION_GRANTED);
+        if (!hasPermission) {
+            ActivityCompat.requestPermissions(getActivity(),new String[]{
+                    android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_WRITE_STORAGE);
+        }
+
+        return contentView;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -78,7 +119,13 @@ public class FoodListItemsFragment extends Fragment {
         void onFragmentInteraction(Uri uri);
     }
 
-    class FoodListItemsAdapter extends BaseAdapter {
+    class FoodItemsAdapter extends BaseAdapter {
+
+        private Context context;
+
+        public FoodItemsAdapter(Context context){
+            this.context = context;
+        }
 
         @Override
         public int getCount() {

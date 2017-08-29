@@ -9,12 +9,15 @@ public class FoodItem {
     private String name;
     private String descrption;
     private String imageUrl;
+    private String userId;
+    // TODO: Location, Date?
 
-    public FoodItem(String id, String name, String descrption, String imageUrl) {
+    public FoodItem(String id, String name, String descrption, String imageUrl, String userId) {
         this.setId(id);
         this.setName(name);
         this.setDescrption(descrption);
         this.setImageUrl(imageUrl);
+        this.userId = userId;
     }
 
     public String getId() {
@@ -47,5 +50,13 @@ public class FoodItem {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 }
