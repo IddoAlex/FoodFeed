@@ -5,16 +5,20 @@ package colman.iddo.foodfeed.model;
  */
 
 public class FoodItem {
-    String id;
-    String name;
-    String description;
-    String imageUrl;
 
-    public FoodItem(String id, String name, String description, String imageUrl) {
+    private String id;
+    private String name;
+    private String description;
+    private String imageUrl;
+    private String userId;
+    // TODO: Location, Date?
+
+    public FoodItem(String id, String name, String description, String imageUrl, String userId) {
         this.setId(id);
         this.setName(name);
         this.setDescription(description);
         this.setImageUrl(imageUrl);
+        this.userId = userId;
     }
 
     // Default CTOR, used for initial foods generation
@@ -65,5 +69,11 @@ public class FoodItem {
         this.imageUrl = imageUrl;
     }
 
+    public String getUserId() {
+        return userId;
+    }
 
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
 }
