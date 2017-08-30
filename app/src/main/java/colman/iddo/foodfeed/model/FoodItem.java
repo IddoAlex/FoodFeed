@@ -5,18 +5,34 @@ package colman.iddo.foodfeed.model;
  */
 
 public class FoodItem {
-    private String id;
-    private String name;
-    private String descrption;
-    private String imageUrl;
+    String id;
+    String name;
+    String description;
+    String imageUrl;
 
-    public FoodItem(String id, String name, String descrption, String imageUrl) {
+    public FoodItem(String id, String name, String description, String imageUrl) {
         this.setId(id);
         this.setName(name);
-        this.setDescrption(descrption);
+        this.setDescription(description);
         this.setImageUrl(imageUrl);
     }
 
+    // Default CTOR, used for initial foods generation
+    public FoodItem(){
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj instanceof FoodItem) {
+            FoodItem toCompare = (FoodItem) obj;
+            return (this.id.equalsIgnoreCase(toCompare.getId()));
+        }
+        return false;
+    }
+
+    /**
+     * Getters & Setters
+     */
     public String getId() {
         return id;
     }
@@ -33,12 +49,12 @@ public class FoodItem {
         this.name = name;
     }
 
-    public String getDescrption() {
-        return descrption;
+    public String getDescription() {
+        return description;
     }
 
-    public void setDescrption(String descrption) {
-        this.descrption = descrption;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getImageUrl() {
@@ -48,4 +64,6 @@ public class FoodItem {
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
     }
+
+
 }
