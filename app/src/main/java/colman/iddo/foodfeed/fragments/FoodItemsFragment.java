@@ -18,6 +18,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import colman.iddo.foodfeed.R;
+import colman.iddo.foodfeed.model.FoodItemModel;
 import colman.iddo.foodfeed.model.FoodItem;
 
 /**
@@ -46,7 +47,7 @@ public class FoodItemsFragment extends Fragment {
 
         ListView list = contentView.findViewById(R.id.fliList);
 
-        FoodItemsAdapter adapter = new FoodItemsAdapter(getActivity());
+        final FoodItemsAdapter adapter = new FoodItemsAdapter(getActivity());
 
         list.setAdapter(adapter);
 
@@ -65,7 +66,18 @@ public class FoodItemsFragment extends Fragment {
             }
         });
 
-        // TODO: Load foodItems and set list
+        FoodItemModel.instance.getAllFoodItemsAndObserve(new FoodItemModel.GetAllStudentsAndObserveCallback() {
+            @Override
+            public void onComplete(List<FoodItem> list) {
+                data = list;
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancel() {
+                // Nothing to do
+            }
+        });
 
 
         // App permissions
