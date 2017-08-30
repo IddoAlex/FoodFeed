@@ -3,6 +3,7 @@ package colman.iddo.foodfeed.model;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import java.util.LinkedList;
@@ -19,6 +20,7 @@ public class FoodSql {
     static final String FOOD_NAME = "name";
     static final String FOOD_IMAGE_URL = "imageURL";
     static final String FOOD_DESCRIPTION = "description";
+    static final String FOOD_USER_ID = "userId";
 
     static protected List<FoodItem> getAllFoodItems(SQLiteDatabase db) {
         /**
@@ -32,18 +34,8 @@ public class FoodSql {
          * list. Otherwise, we'll return just an empty list.
          */
         if (cursor.moveToFirst()) {
-            int foodIdIndex = cursor.getColumnIndex(FOOD_ID);
-            int nameIndex = cursor.getColumnIndex(FOOD_NAME);
-            int imageUrlIndex = cursor.getColumnIndex(FOOD_IMAGE_URL);
-            int descriptionIndex = cursor.getColumnIndex(FOOD_DESCRIPTION);
-
             do {
-                FoodItem food = new FoodItem();
-                food.id = cursor.getString(foodIdIndex);
-                food.name = cursor.getString(nameIndex);
-                food.imageUrl = cursor.getString(imageUrlIndex);
-                food.description = cursor.getString(descriptionIndex);
-                list.add(food);
+                list.add(createFoodItemFromCursor(cursor));
             } while (cursor.moveToNext());
         }
         return list;
@@ -51,10 +43,11 @@ public class FoodSql {
 
     static void addFoodItem(SQLiteDatabase db, FoodItem foodItem) {
         ContentValues values = new ContentValues();
-        values.put(FOOD_ID, foodItem.id);
-        values.put(FOOD_NAME, foodItem.name);
-        values.put(FOOD_IMAGE_URL, foodItem.imageUrl);
-        values.put(FOOD_DESCRIPTION, foodItem.description);
+        values.put(FOOD_ID, foodItem.getId());
+        values.put(FOOD_NAME, foodItem.getName());
+        values.put(FOOD_IMAGE_URL, foodItem.getImageUrl());
+        values.put(FOOD_DESCRIPTION, foodItem.getDescription());
+        values.put(FOOD_USER_ID, foodItem.getUserId());
 
         db.insert(FOOD_TABLE, FOOD_ID, values);
 
@@ -67,17 +60,13 @@ public class FoodSql {
     static FoodItem getFoodItem(SQLiteDatabase db, String foodItemRow) {
         String[] selectionArgs = {foodItemRow};
         Cursor cursor = db.query(FOOD_TABLE, null, ROWID + " = ?", selectionArgs, null, null, null);
-        FoodItem foodItem = new FoodItem();
+
         /**
          * If we can move the cursor to the first row, it means we have at least one student in the
          * list, that we would return. Otherwise, we'll return just null.
          */
         if (cursor.moveToFirst()) {
-            foodItem.id = cursor.getString(cursor.getColumnIndex(FOOD_ID));
-            foodItem.name = cursor.getString(cursor.getColumnIndex(FOOD_NAME));
-            foodItem.imageUrl = cursor.getString(cursor.getColumnIndex(FOOD_IMAGE_URL));
-            foodItem.description = cursor.getString(cursor.getColumnIndex(FOOD_DESCRIPTION));
-            return foodItem;
+            return createFoodItemFromCursor(cursor);
         }
         return null;
     }
@@ -98,10 +87,11 @@ public class FoodSql {
 
     static void editFoodItem(SQLiteDatabase db, FoodItem foodItem, String foodItemRow){
         ContentValues values = new ContentValues();
-        values.put(FOOD_ID, foodItem.id);
-        values.put(FOOD_NAME, foodItem.name);
-        values.put(FOOD_IMAGE_URL, foodItem.imageUrl);
-        values.put(FOOD_DESCRIPTION, foodItem.description);
+        values.put(FOOD_ID, foodItem.getId());
+        values.put(FOOD_NAME, foodItem.getName());
+        values.put(FOOD_IMAGE_URL, foodItem.getImageUrl());
+        values.put(FOOD_DESCRIPTION, foodItem.getDescription());
+        values.put(FOOD_USER_ID, foodItem.getUserId());
 
         db.update(FOOD_TABLE, values, ROWID + "=" + foodItemRow, null);
     }
@@ -134,7 +124,8 @@ public class FoodSql {
                 FOOD_ID + " TEXT, " +
                 FOOD_NAME + " TEXT, " +
                 FOOD_IMAGE_URL + " TEXT, " +
-                FOOD_DESCRIPTION + " TEXT)");
+                FOOD_DESCRIPTION + " TEXT, " +
+                FOOD_USER_ID + " TEXT)");
     }
 
     /**
@@ -144,5 +135,18 @@ public class FoodSql {
     static public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("drop table if exists " + FOOD_TABLE);
         onCreate(db);
+    }
+
+    @NonNull
+    private static FoodItem createFoodItemFromCursor(Cursor cursor) {
+        FoodItem fi = new FoodItem();
+
+        fi.setId(cursor.getString(cursor.getColumnIndex(FOOD_ID)));
+        fi.setName(cursor.getString(cursor.getColumnIndex(FOOD_NAME)));
+        fi.setImageUrl(cursor.getString(cursor.getColumnIndex(FOOD_IMAGE_URL)));
+        fi.setDescription(cursor.getString(cursor.getColumnIndex(FOOD_DESCRIPTION)));
+        fi.setUserId(cursor.getString(cursor.getColumnIndex(FOOD_USER_ID)));
+
+        return fi;
     }
 }
