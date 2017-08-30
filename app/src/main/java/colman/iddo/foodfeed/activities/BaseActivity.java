@@ -1,16 +1,23 @@
-package colman.iddo.foodfeed;
+package colman.iddo.foodfeed.activities;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
+
+import colman.iddo.foodfeed.R;
 
 import com.google.firebase.auth.FirebaseAuth;
 
 public class BaseActivity extends Activity {
 
+    private final String OPTIONS_MENU_TAG = "OptionsMenuTag";
+
     private FirebaseAuth mAuth;
+    // TODO?: Remove ProgressDialog
     private ProgressDialog mProgressDialog;
     private String _loadingString = "Loading...";
 
@@ -32,6 +39,25 @@ public class BaseActivity extends Activity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main, menu);
 
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Log.d(OPTIONS_MENU_TAG,"menu item selcted");
+        switch (item.getItemId()){
+            case R.id.addFoodItemBtn:
+                Log.d(OPTIONS_MENU_TAG,"Add button pressed");
+                /*
+                // TODO: Change accordingly
+                NewStudentFragment newStudentFragment = new NewStudentFragment();
+                getFragmentManager().beginTransaction()
+                        .replace(((ViewGroup) getView().getParent()).getId(), newStudentFragment).addToBackStack(null).commit();
+                */
+                break;
+            default:
+                return false;
+        }
         return true;
     }
 
