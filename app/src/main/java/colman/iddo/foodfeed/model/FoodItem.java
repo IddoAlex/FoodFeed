@@ -11,14 +11,15 @@ public class FoodItem {
     private String description;
     private String imageUrl;
     private String userId;
-    // TODO: Location, Date?
+    private double lastUpdateDate;
 
-    public FoodItem(String id, String name, String description, String imageUrl, String userId) {
+    public FoodItem(String id, String name, String description, String imageUrl, String userId, double lastUpdateDate) {
         this.setId(id);
         this.setName(name);
         this.setDescription(description);
         this.setImageUrl(imageUrl);
-        this.userId = userId;
+        this.setUserId(userId);
+        this.setLastUpdateDate(lastUpdateDate);
     }
 
     // Default CTOR, used for initial foods generation
@@ -75,5 +76,13 @@ public class FoodItem {
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    public double getLastUpdateDate() {
+        return lastUpdateDate;
+    }
+
+    public void setLastUpdateDate(double lastUpdateDate) {
+        this.lastUpdateDate = lastUpdateDate;
     }
 }
