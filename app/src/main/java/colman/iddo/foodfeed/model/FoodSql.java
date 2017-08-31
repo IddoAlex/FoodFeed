@@ -15,14 +15,13 @@ import java.util.List;
 
 public class FoodSql {
     static final String FOOD_TABLE = "foodItems";
-    static final String ROWID = "ID";
-    static final String FOOD_ID = "foodid";
+    static final String FOOD_ID = "foodId";
     static final String FOOD_NAME = "name";
     static final String FOOD_IMAGE_URL = "imageURL";
     static final String FOOD_DESCRIPTION = "description";
     static final String FOOD_USER_ID = "userId";
 
-    static protected List<FoodItem> getAllFoodItems(SQLiteDatabase db) {
+    static List<FoodItem> getAllFoodItems(SQLiteDatabase db) {
         /**
          * in the following query we'll use "null" as the columns, to mimic SELECT * (get all cols)
          * We'll use null for the selection and selectionArgs as we don't have any WHERE statement.
@@ -54,12 +53,12 @@ public class FoodSql {
     }
 
     static protected void deleteFoodItem(SQLiteDatabase db, String foodItemId) {
-        db.delete(FOOD_TABLE, ROWID + "=" + getRowIndex(db, foodItemId), null);
+        db.delete(FOOD_TABLE, FOOD_ID + "=" + foodItemId, null);
     }
 
-    static FoodItem getFoodItem(SQLiteDatabase db, String foodItemRow) {
-        String[] selectionArgs = {foodItemRow};
-        Cursor cursor = db.query(FOOD_TABLE, null, ROWID + " = ?", selectionArgs, null, null, null);
+    static FoodItem getFoodItem(SQLiteDatabase db, String foodItemId) {
+        String[] selectionArgs = {foodItemId};
+        Cursor cursor = db.query(FOOD_TABLE, null, FOOD_ID + " = ?", selectionArgs, null, null, null);
 
         /**
          * If we can move the cursor to the first row, it means we have at least one student in the
@@ -71,21 +70,7 @@ public class FoodSql {
         return null;
     }
 
-    static int getRowIndex(SQLiteDatabase db, String foodItemId) {
-        String[] selectionArgs = { foodItemId };
-        Cursor cursor = db.query(FOOD_TABLE, null, FOOD_ID + " = ?", selectionArgs, null, null, null);
-        cursor.moveToFirst();
-
-        /**
-         * The row Index is the row's auto increment integer primary key value
-         */
-        int foodItemRowIndex = cursor.getColumnIndex(ROWID);
-        String foodItemRow = cursor.getString(foodItemRowIndex);
-        Log.d("FoodItemsSQL", "SQL FoodItem Row ID = " + foodItemRow);
-        return Integer.parseInt(foodItemRow);
-    }
-
-    static void editFoodItem(SQLiteDatabase db, FoodItem foodItem, String foodItemRow){
+    static void editFoodItem(SQLiteDatabase db, FoodItem foodItem){
         ContentValues values = new ContentValues();
         values.put(FOOD_ID, foodItem.getId());
         values.put(FOOD_NAME, foodItem.getName());
@@ -93,10 +78,11 @@ public class FoodSql {
         values.put(FOOD_DESCRIPTION, foodItem.getDescription());
         values.put(FOOD_USER_ID, foodItem.getUserId());
 
-        db.update(FOOD_TABLE, values, ROWID + "=" + foodItemRow, null);
+        db.update(FOOD_TABLE, values, FOOD_ID + "=" + foodItem.getId(), null);
     }
 
-    static boolean checkIfIdAlreadyExists(SQLiteDatabase db, String foodItemId, int index) {
+    static boolean checkIfIdAlreadyExists(SQLiteDatabase db, String foodItemId) {
+        /*
         String[] selectionArgs = {foodItemId};
         Cursor cursor = db.query(FOOD_TABLE, null, null, null, null, null, null);
 
@@ -110,6 +96,16 @@ public class FoodSql {
             } while (cursor.moveToNext());
         }
         return false;
+        */
+        String query = "Select * from " + FOOD_TABLE + " where " + FOOD_ID + " = " + foodItemId;
+        Cursor cursor = db.rawQuery(query, null);
+
+        if(cursor.getCount() <= 0){
+            cursor.close();
+            return false;
+        }
+        cursor.close();
+        return true;
     }
 
     /**
@@ -120,8 +116,7 @@ public class FoodSql {
     static public void onCreate(SQLiteDatabase db) {
         db.execSQL("create table " + FOOD_TABLE +
                 " (" +
-                ROWID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                FOOD_ID + " TEXT, " +
+                FOOD_ID + " TEXT PRIMARY KEY , " +
                 FOOD_NAME + " TEXT, " +
                 FOOD_IMAGE_URL + " TEXT, " +
                 FOOD_DESCRIPTION + " TEXT, " +
