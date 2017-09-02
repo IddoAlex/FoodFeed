@@ -65,7 +65,6 @@ public class ModelFiles {
         task.execute(imageFileName);
     }
 
-
     private static Bitmap loadImageFromFile(String imageFileName){
         Bitmap bitmap = null;
         try {

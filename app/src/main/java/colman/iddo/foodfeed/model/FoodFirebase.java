@@ -43,25 +43,33 @@ public class FoodFirebase {
 
     static final String FOOD_TABLE = "foodItems";
     static final String FOOD_ID = "foodId";
-    static final String FOOD_NAME = "name";
-    static final String FOOD_IMAGE_URL = "imageURL";
-    static final String FOOD_DESCRIPTION = "description";
-    static final String FOOD_USER_ID = "userId";
-    static final String FOOD_LAST_UPDATE_DATE = "userId";
+<<<<<<< HEAD
+    static final String NAME = "foodName";
+    static final String TYPE = "foodType";
+    static final String DESCRIPTION = "description";
+    static final String PRICE = "price";
+    static final String DISCOUNT = "discount";
+    static final String IMAGE_URL = "imageURL";
+    static final String USER_ID = "userId";
+    static final String FOOD_LAST_UPDATE_DATE = "lasUpdateDate";
 
-    public void addOrUpdateFoodItem(FoodItem fi) {
+
+    public void addOrUpdateFoodItem(FoodItem foodItem) {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference(FOOD_TABLE);
 
         Map<String, Object> value = new HashMap<>();
-        value.put(FOOD_ID, fi.getId());
-        value.put(FOOD_NAME, fi.getName());
-        value.put(FOOD_IMAGE_URL, fi.getImageUrl());
-        value.put(FOOD_DESCRIPTION, fi.getDescription());
-        value.put(FOOD_USER_ID, fi.getUserId());
+        value.put(FOOD_ID, foodItem.getId());
+        value.put(NAME, foodItem.getFoodName());
+        value.put(TYPE, foodItem.getFoodType());
+        value.put(DESCRIPTION, foodItem.getDescription());
+        value.put(PRICE, foodItem.getPrice());
+        value.put(DISCOUNT, foodItem.getDiscount());
+        value.put(IMAGE_URL, foodItem.getImageUrl());
+        value.put(USER_ID, foodItem.getUserId());
         value.put(FOOD_LAST_UPDATE_DATE, ServerValue.TIMESTAMP);
 
-        myRef.child(fi.getId()).setValue(value);
+        myRef.child(foodItem.getId()).setValue(value);
     }
 
     public void getFoodItem(String foodId, final GetFoodItemCallback callback) {
@@ -88,7 +96,7 @@ public class FoodFirebase {
     }
 
     public void getAllFoodItemsAndObserve(double lastUpdateDate,
-                                         final GetAllFoodItemsAndObserveCallback callback) {
+                                          final GetAllFoodItemsAndObserveCallback callback) {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference(FOOD_TABLE);
 
@@ -106,7 +114,7 @@ public class FoodFirebase {
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
-                        Log.d(TAG, "DatabaseError occured: " + databaseError.getMessage());
+                        Log.d(TAG, "DatabaseError occurred: " + databaseError.getMessage());
                         callback.onCancel();
                     }
                 });
@@ -155,5 +163,4 @@ public class FoodFirebase {
             }
         });
     }
-
 }

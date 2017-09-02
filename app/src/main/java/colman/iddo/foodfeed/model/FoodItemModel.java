@@ -45,7 +45,7 @@ public class FoodItemModel {
     }
 
     public void getAllFoodItemsAndObserve(final GetAllStudentsAndObserveCallback callback) {
-        //1. get local lastUpdateTade
+        //1. get local lastUpdate
         SharedPreferences pref = MainActivity.getMyContext().getSharedPreferences(TAG, Context.MODE_PRIVATE);
         final double lastUpdateDate = pref.getFloat(LastFoodItemsUpdateDateString,0);
         Log.d(TAG,"lastUpdateDate: " + lastUpdateDate);
@@ -96,18 +96,18 @@ public class FoodItemModel {
         foodFirebase.addOrUpdateFoodItem(foodItem);
     }
 
-    public void deleteFoodItem(FoodItem f){
-        Log.d(TAG, "foodId to delete:" + f.getId());
-        FoodSql.deleteFoodItem(modelSql.getWritableDatabase(), f.getId());
-        foodFirebase.deleteFoodItem(f.getId());
+    public void deleteFoodItem(String foodId){
+        FoodSql.deleteFoodItem(modelSql.getWritableDatabase(), foodId);
+        foodFirebase.deleteFoodItem(foodId);
     }
 
     public void updateFoodItem(FoodItem foodItem) {
         foodFirebase.addOrUpdateFoodItem(foodItem);
+        FoodSql.updateFoodItem(modelSql.getWritableDatabase(), foodItem);
+    }
 
-        FoodSql.editFoodItem(modelSql.getWritableDatabase(), foodItem);
-
-        Log.d(TAG, "FoodItem updated");
+    public boolean checkIfIdAlreadyExists(String foodId){
+        return FoodSql.checkIfIdAlreadyExists(modelSql.getReadableDatabase(), foodId);
     }
 
     /*
@@ -130,7 +130,7 @@ public class FoodItemModel {
     }
 
     public void getImage(final String url, final GetImageListener listener) {
-        //check if image exsist localy
+        //check if image exist locally
         final String fileName = URLUtil.guessFileName(url, null, null);
         ModelFiles.loadImageFromFileAsynch(fileName, new ModelFiles.LoadImageFromFileAsynch() {
             @Override
