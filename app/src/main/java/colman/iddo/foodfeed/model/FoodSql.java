@@ -20,7 +20,6 @@ public class FoodSql {
     static final String TYPE = "type";
     static final String DESCRIPTION = "description";
     static final String VEGETARIAN = "vegetarian";
-    static final String PRICE = "price";
     static final String IMAGE_URL = "imageURL";
     static final String FOOD_USER_ID = "userId";
 
@@ -47,7 +46,7 @@ public class FoodSql {
         ContentValues values = new ContentValues();
         values.put(FOOD_ID, foodItem.getId());
         values.put(NAME, foodItem.getName());
-        values.put(TYPE, foodItem.getFoodType());
+        values.put(TYPE, foodItem.getType());
         values.put(DESCRIPTION, foodItem.getDescription());
         values.put(VEGETARIAN, foodItem.getVegetarian() ? 1 : 0);
         values.put(FOOD_USER_ID, foodItem.getUserId());
@@ -60,7 +59,7 @@ public class FoodSql {
         ContentValues values = new ContentValues();
         values.put(FOOD_ID, foodItem.getId());
         values.put(NAME, foodItem.getName());
-        values.put(TYPE, foodItem.getFoodType());
+        values.put(TYPE, foodItem.getType());
         values.put(DESCRIPTION, foodItem.getDescription());
         values.put(VEGETARIAN, foodItem.getVegetarian() ? 1 : 0);
         values.put(IMAGE_URL, foodItem.getImageUrl());
@@ -140,7 +139,7 @@ public class FoodSql {
         FoodItem foodItem = new FoodItem();
         foodItem.setId(cursor.getString(idIndex));
         foodItem.setName(cursor.getString(nameIndex));
-        foodItem.setFoodType(cursor.getString(typeIndex));
+        foodItem.setType(cursor.getString(typeIndex));
         foodItem.setDescription(cursor.getString(descriptionIndex));
         foodItem.setVegetarian(cursor.getInt(vegetarianIndex) == 1);
 

@@ -175,7 +175,7 @@ public class FoodItemsListFragment extends Fragment {
                 vegetarian.setVisibility(View.VISIBLE);
             else
                 vegetarian.setVisibility(View.INVISIBLE);
-            foodType.setText(foodItem.getFoodType());
+            foodType.setText(foodItem.getType());
             description.setText(foodItem.getDescription());
 
             imageView.setTag(foodItem.getImageUrl());

@@ -85,7 +85,7 @@ public class FoodDetailsFragment extends Fragment {
             foodImage = (ImageView) contentView.findViewById(R.id.details_food_image);
 
             foodName.setText(foodItem.getName());
-            foodType.setText(foodItem.getFoodType());
+            foodType.setText(foodItem.getType());
             if (foodItem.getVegetarian())
                 vegetarian.setVisibility(View.VISIBLE);
             else

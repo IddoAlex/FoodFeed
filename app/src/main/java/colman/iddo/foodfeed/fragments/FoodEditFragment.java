@@ -99,7 +99,7 @@ public class FoodEditFragment extends Fragment {
             progressBar.setVisibility(GONE);
 
             foodName.setText(foodItem.getName());
-            foodType.setText(foodItem.getFoodType());
+            foodType.setText(foodItem.getType());
             vegetarian.setChecked(foodItem.getVegetarian());
             description.setText(foodItem.getDescription());
 
