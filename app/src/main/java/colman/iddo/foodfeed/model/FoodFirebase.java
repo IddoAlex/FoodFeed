@@ -43,15 +43,13 @@ public class FoodFirebase {
 
     static final String FOOD_TABLE = "foodItems";
     static final String FOOD_ID = "foodId";
-    static final String NAME = "foodName";
-    static final String TYPE = "foodType";
+    static final String NAME = "name";
+    static final String TYPE = "type";
     static final String DESCRIPTION = "description";
-    static final String PRICE = "price";
-    static final String DISCOUNT = "discount";
+    static final String VEGETARIAN = "vegetarian";
     static final String IMAGE_URL = "imageURL";
     static final String USER_ID = "userId";
     static final String FOOD_LAST_UPDATE_DATE = "lasUpdateDate";
-
 
     public void addOrUpdateFoodItem(FoodItem foodItem) {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -60,10 +58,9 @@ public class FoodFirebase {
         Map<String, Object> value = new HashMap<>();
         value.put(FOOD_ID, foodItem.getId());
         value.put(NAME, foodItem.getName());
-        value.put(TYPE, foodItem.getName());
+        value.put(TYPE, foodItem.getType());
         value.put(DESCRIPTION, foodItem.getDescription());
-        value.put(PRICE, foodItem.getPrice());
-        value.put(DISCOUNT, foodItem.getDiscount());
+        value.put(VEGETARIAN, foodItem.getVegetarian());
         value.put(IMAGE_URL, foodItem.getImageUrl());
         value.put(USER_ID, foodItem.getUserId());
         value.put(FOOD_LAST_UPDATE_DATE, ServerValue.TIMESTAMP);

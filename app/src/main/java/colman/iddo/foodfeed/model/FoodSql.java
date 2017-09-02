@@ -19,8 +19,8 @@ public class FoodSql {
     static final String NAME = "name";
     static final String TYPE = "type";
     static final String DESCRIPTION = "description";
+    static final String VEGETARIAN = "vegetarian";
     static final String PRICE = "price";
-    static final String DISCOUNT = "discount";
     static final String IMAGE_URL = "imageURL";
     static final String FOOD_USER_ID = "userId";
 
@@ -47,13 +47,11 @@ public class FoodSql {
         ContentValues values = new ContentValues();
         values.put(FOOD_ID, foodItem.getId());
         values.put(NAME, foodItem.getName());
-        values.put(TYPE, foodItem.getType());
+        values.put(TYPE, foodItem.getFoodType());
         values.put(DESCRIPTION, foodItem.getDescription());
-        values.put(PRICE, foodItem.getPrice());
-        values.put(IMAGE_URL, foodItem.getImageUrl());
+        values.put(VEGETARIAN, foodItem.getVegetarian() ? 1 : 0);
         values.put(FOOD_USER_ID, foodItem.getUserId());
-
-        values.put(DISCOUNT, foodItem.getDiscount() ? 1 : 0);
+        values.put(IMAGE_URL, foodItem.getImageUrl());
 
         db.insert(FOOD_TABLE, FOOD_ID, values);
     }
@@ -62,13 +60,9 @@ public class FoodSql {
         ContentValues values = new ContentValues();
         values.put(FOOD_ID, foodItem.getId());
         values.put(NAME, foodItem.getName());
-        values.put(TYPE, foodItem.getType());
+        values.put(TYPE, foodItem.getFoodType());
         values.put(DESCRIPTION, foodItem.getDescription());
-        values.put(PRICE, foodItem.getPrice());
-        if (foodItem.getDiscount())
-            values.put(DISCOUNT, 1);
-        else
-            values.put(DISCOUNT, 0);
+        values.put(VEGETARIAN, foodItem.getVegetarian() ? 1 : 0);
         values.put(IMAGE_URL, foodItem.getImageUrl());
 
         db.update(FOOD_TABLE, values, FOOD_ID + "= ?", new String[] { foodItem.getId() });
@@ -104,16 +98,6 @@ public class FoodSql {
         return true;
     }
 
-    static void toggleChecked(SQLiteDatabase db, FoodItem foodItem){
-        ContentValues values = new ContentValues();
-        if (foodItem.getDiscount())
-            values.put(DISCOUNT, 1);
-        else
-            values.put(DISCOUNT, 0);
-
-        db.update(FOOD_TABLE, values, FOOD_ID + "=" + foodItem.getId(), null);
-    }
-
     /**
      * onCreate is created once we still don't have tables in our DB.
      * We use method to initially create the DB.
@@ -126,11 +110,12 @@ public class FoodSql {
                 NAME + " TEXT, " +
                 TYPE + " TEXT, " +
                 DESCRIPTION + " TEXT, " +
-                PRICE + " NUMBER, " +
-                DISCOUNT + " NUMBER, " +
+                VEGETARIAN + " NUMBER, " +
                 IMAGE_URL + " TEXT, " +
                 FOOD_USER_ID + " TEXT " +
                 ")");
+
+
     }
 
     /**
@@ -148,20 +133,18 @@ public class FoodSql {
         int nameIndex = cursor.getColumnIndex(NAME);
         int typeIndex = cursor.getColumnIndex(TYPE);
         int descriptionIndex = cursor.getColumnIndex(DESCRIPTION);
-        int priceIndex = cursor.getColumnIndex(PRICE);
-        int discountIndex = cursor.getColumnIndex(DISCOUNT);
+        int vegetarianIndex = cursor.getColumnIndex(VEGETARIAN);
+
         int imageUrlIndex = cursor.getColumnIndex(IMAGE_URL);
-        int imageUserId = cursor.getColumnIndex(FOOD_USER_ID);
 
         FoodItem foodItem = new FoodItem();
         foodItem.setId(cursor.getString(idIndex));
         foodItem.setName(cursor.getString(nameIndex));
-        foodItem.setType(cursor.getString(typeIndex));
+        foodItem.setFoodType(cursor.getString(typeIndex));
         foodItem.setDescription(cursor.getString(descriptionIndex));
-        foodItem.setPrice(cursor.getInt(priceIndex));
-        foodItem.setDiscount(cursor.getInt(discountIndex) == 1);
+        foodItem.setVegetarian(cursor.getInt(vegetarianIndex) == 1);
+
         foodItem.setImageUrl(cursor.getString(imageUrlIndex));
-        foodItem.setUserId(cursor.getString(imageUserId));
 
         return foodItem;
     }

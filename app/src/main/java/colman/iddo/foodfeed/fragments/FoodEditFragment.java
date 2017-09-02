@@ -1,9 +1,7 @@
 package colman.iddo.foodfeed.fragments;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.Fragment;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -37,12 +35,10 @@ public class FoodEditFragment extends Fragment {
     protected FoodItem foodItem;
     protected ProgressBar progressBar;
 
-    protected TextView id;
     protected TextView foodName;
     protected ImageView foodImage;
     protected TextView foodType;
-    protected CheckBox discount;
-    protected TextView price;
+    protected CheckBox vegetarian;
     protected TextView description;
 
     protected Bitmap imageBitmap;
@@ -93,23 +89,18 @@ public class FoodEditFragment extends Fragment {
         if (myBundle != null){
             this.foodIdString = myBundle.getString(FOOD_ID);
             foodItem = FoodItemModel.instance.getFoodItem(foodIdString);
-            id = (EditText) contentView.findViewById(R.id.edit_id);
             foodName = (EditText) contentView.findViewById(R.id.edit_name);
             foodImage = (ImageView) contentView.findViewById(R.id.edit_image);
             foodType = (EditText) contentView.findViewById(R.id.edit_type);
-            discount = (CheckBox) contentView.findViewById(R.id.edit_discount);
-            price = (EditText) contentView.findViewById(R.id.edit_price);
+            vegetarian = (CheckBox) contentView.findViewById(R.id.edit_vegetarian);
             description = (EditText) contentView.findViewById(R.id.edit_description);
 
             progressBar = (ProgressBar) contentView.findViewById(R.id.edit_progressbar);
             progressBar.setVisibility(GONE);
 
-            id.setText(foodItem.getId());
-            id.setEnabled(false); //User can't edit the food's ID after it was created
             foodName.setText(foodItem.getName());
-            foodType.setText(foodItem.getType());
-            discount.setChecked(foodItem.getDiscount());
-            price.setText(foodItem.getPrice());
+            foodType.setText(foodItem.getFoodType());
+            vegetarian.setChecked(foodItem.getVegetarian());
             description.setText(foodItem.getDescription());
 
             foodImage.setTag(foodItem.getImageUrl());
@@ -146,7 +137,7 @@ public class FoodEditFragment extends Fragment {
         saveBtn.setOnClickListener(new View.OnClickListener() {
                                        @Override
                                        public void onClick(View v) {
-                                           saveFoodItem();
+                                           saveFoodItem(foodIdString);
                                        }
                                    }
         );
@@ -208,22 +199,24 @@ public class FoodEditFragment extends Fragment {
         backToList();
     }
 
-    public void saveFoodItem(){
-        String idNew = ((EditText)getView().findViewById(R.id.edit_id)).getText().toString();
+    public void saveFoodItem(String foodId){
+        String idNew = foodId;
         String nameNew = ((EditText) getView().findViewById(R.id.edit_name)).getText().toString();
         String typeNew = ((EditText)getView().findViewById(R.id.edit_type)).getText().toString();
         String descriptionNew = ((EditText)getView().findViewById(R.id.edit_description)).getText().toString();
-        String priceNew = ((EditText)getView().findViewById(R.id.edit_price)).getText().toString();
-        Boolean discountNew = ((CheckBox)getView().findViewById(R.id.edit_discount)).isChecked();
+        Boolean vegetarianNew = ((CheckBox)getView().findViewById(R.id.edit_vegetarian)).isChecked();
         progressBar.setVisibility(View.VISIBLE);
-        final FoodItem newFoodItem = new FoodItem(idNew, nameNew, typeNew, descriptionNew, Integer.parseInt(priceNew), discountNew, null, foodItem.getUserId());
+        final FoodItem foodItemNew = new FoodItem(idNew, nameNew, typeNew, descriptionNew, vegetarianNew, foodItem.getImageUrl(), foodItem.getUserId(), 0);
+        // Note: The last FoodItem's CTOR value (lastUpdateDate) is initiated as 0, as it's value
+        // is necessary to be used only when saving the item in FireBase.
+        // It is done using FoodFirebase's addOrUpdateFoodItem method, by inserting timestamp to it.
 
         if (imageBitmap != null) {
-            FoodItemModel.instance.saveImage(imageBitmap, newFoodItem.getId() + ".jpeg", new FoodItemModel.SaveImageListener() {
+            FoodItemModel.instance.saveImage(imageBitmap, foodItemNew.getId() + ".jpeg", new FoodItemModel.SaveImageListener() {
                 @Override
                 public void complete(String url) {
-                    newFoodItem.setImageUrl(url);
-                    FoodItemModel.instance.updateFoodItem(newFoodItem);
+                    foodItemNew.setImageUrl(url);
+                    FoodItemModel.instance.updateFoodItem(foodItemNew);
                     progressBar.setVisibility(GONE);
                     showMessage("Edit Food Details", "Food updated successfully");
                     backToList();
@@ -236,7 +229,7 @@ public class FoodEditFragment extends Fragment {
                 }
             });
         }else{
-            FoodItemModel.instance.updateFoodItem(newFoodItem);
+            FoodItemModel.instance.updateFoodItem(foodItemNew);
             progressBar.setVisibility(GONE);
             showMessage("Edit Food Details", "Food updated successfully");
             backToList();

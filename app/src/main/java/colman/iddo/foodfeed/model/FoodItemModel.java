@@ -108,13 +108,7 @@ public class FoodItemModel {
         FoodSql.updateFoodItem(modelSql.getWritableDatabase(), foodItem);
     }
 
-    public boolean checkIfIdAlreadyExists(String foodId){
-        return FoodSql.checkIfIdAlreadyExists(modelSql.getReadableDatabase(), foodId);
-    }
-
-    /*
-        IMAGES
-         */
+    // IMAGES
     public void saveImage(final Bitmap imageBmp, final String name, final SaveImageListener listener) {
         foodFirebase.saveImage(imageBmp, name, new SaveImageListener() {
             @Override

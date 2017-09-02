@@ -10,21 +10,21 @@ public class FoodItem {
     private String name;
     private String type;
     private String description;
-    private String price;
-    private Boolean discount;
-    private String imageUrl;
+    private Boolean vegetarian;
     private String userId;
+
+    private String imageUrl;
     private double lastUpdateDate;
 
-    public FoodItem(String id, String name, String type, String description, int price, Boolean discount, String imageUrl, String userId) {
+    public FoodItem(String id, String name, String type, String description, Boolean vegetarian, String imageUrl, String userId, double lastUpdateDate) {
         this.setId(id);
         this.setName(name);
         this.setType(type);
         this.setDescription(description);
-        this.setPrice(price);
-        this.setDiscount(discount);
+        this.setVegetarian(vegetarian);
         this.setImageUrl(imageUrl);
         this.setUserId(userId);
+        this.setLastUpdateDate(lastUpdateDate);
     }
 
     // Default CTOR, used for initial foods generation
@@ -79,21 +79,13 @@ public class FoodItem {
 
     public void setType(String foodType) { this.type = foodType; }
 
-    public String getPrice() { return price; }
+    public String getUserId() { return userId; }
 
-    public void setPrice(int price) { this.price = Integer.toString(price); }
+    public void setUserId(String userId) { this.userId = userId; }
 
-    public Boolean getDiscount() { return discount; }
+    public Boolean getVegetarian() { return vegetarian; }
 
-    public void setDiscount(Boolean discount) { this.discount = discount; }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-
-    public String getUserId() {
-        return userId;
-    }
+    public void setVegetarian(Boolean vegetarian) { this.vegetarian = vegetarian; }
 
     public double getLastUpdateDate() {
         return lastUpdateDate;
