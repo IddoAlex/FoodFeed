@@ -1,11 +1,18 @@
 <resources>
     <string name="app_name">Food Feed</string>
 
-    <!-- Student details -->
+    <!-- Food details -->
     <string name="id">ID: </string>
-    <string name="name">Dish name : </string>
+    <string name="foodName">Food name: </string>
     <string name="description">Description: </string>
-    <string name="imageUrl">Image URL: </string>
+    <string name="foodType">Food type: </string>
+    <string name="foodPrice">Price: </string>
+    <string name="foodDiscount">Mark as discount</string>
+
+    <!-- Choose image dialog -->
+    <string name="img_dialog_title">Choose image from...</string>
+    <string name="camera">Camera</string>
+    <string name="Gallery">Gallery</string>
 
     <!-- Buttons -->
     <string name="btn_cancel">Cancel</string>
@@ -13,7 +20,6 @@
     <string name="btn_delete">Delete</string>
     <string name="btn_edit">Edit</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="title_activity_main">Food Feed</string>
     <string name="action_settings">Settings</string>
 </resources>

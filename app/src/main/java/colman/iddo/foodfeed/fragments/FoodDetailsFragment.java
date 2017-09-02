@@ -2,17 +2,20 @@ package colman.iddo.foodfeed.fragments;
 
 import android.app.Fragment;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import colman.iddo.foodfeed.R;
 import colman.iddo.foodfeed.model.FoodItem;
-import colman.iddo.foodfeed.model.Model;
+import colman.iddo.foodfeed.model.FoodItemModel;
 
 public class FoodDetailsFragment extends Fragment {
 
@@ -33,22 +36,25 @@ public class FoodDetailsFragment extends Fragment {
     }
 
     // the fragment initialization parameters
-    private static final String FOOD_ID = "foodId";
+    private static final String FOOD_ID = "FOOD_ID";
 
     // fragment's main variables
-    private FoodItem foodItem;
-    private String foodId;
-    private int foodRow;
-    TextView name;
-    TextView id;
-    TextView description;
+    protected FoodItem foodItem;
+    protected String foodId;
+    protected TextView id;
+    protected TextView foodName;
+    protected ImageView foodImage;
+    protected TextView foodType;
+    protected ImageView discount;
+    protected TextView price;
+    protected TextView description;
 
     private DetailsFragmentListener detailsFragmentListener;
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
-        menu.findItem(R.id.menu_add).setVisible(false).setEnabled(false);
-        menu.findItem(R.id.menu_edit).setVisible(true).setEnabled(true);
+        menu.findItem(R.id.addFoodItemBtn).setVisible(false).setEnabled(false);
+        menu.findItem(R.id.editFoodItemBtn).setVisible(true).setEnabled(true);
     }
 
     public FoodDetailsFragment() {
@@ -74,8 +80,7 @@ public class FoodDetailsFragment extends Fragment {
 
         if (getArguments() != null) {
             foodId = getArguments().getString(FOOD_ID);
-            foodRow = Model.instance.getRowIndex(foodId);
-            foodItem = Model.instance.getFoodItem("" + foodRow);
+            foodItem = FoodItemModel.instance.getFoodItem(foodId);
             Log.d("DETAILS", "(onCreate) foodId got from FOOD_ID = " + foodId);
         }
     }
@@ -83,17 +88,58 @@ public class FoodDetailsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Log.d("DETAILS", "StudentDetailsFragment onCreateView");
+        Log.d("DETAILS", "FoodDetailsFragment onCreateView");
         Log.d("DETAILS", "Passed foodItem id = " + foodItem.getId());
 
         // Inflate the layout for this fragment
         View contentView = inflater.inflate(R.layout.fragment_food_details, container, false);
-        name = (TextView) contentView.findViewById(R.id.details_name);
-        description = (TextView) contentView.findViewById(R.id.details_description);
+        getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
 
-        name.setText(foodItem.getName());
-        id.setText(foodItem.getId());
-        description.setText(foodItem.getDescription());
+        Bundle myBundle = this.getArguments();
+
+        if (myBundle != null){
+            foodId = myBundle.getString(FOOD_ID);
+
+            foodItem = FoodItemModel.instance.getFoodItem(foodId);
+
+            foodName = (TextView) contentView.findViewById(R.id.details_food_name);
+            id = (TextView) contentView.findViewById(R.id.details_food_id);
+            foodType = contentView.findViewById(R.id.details_food_type);
+            discount = (ImageView) contentView.findViewById(R.id.details_food_discount);
+            price = (TextView) contentView.findViewById(R.id.details_food_price);
+            description = (TextView) contentView.findViewById(R.id.details_food_description);
+            foodImage = (ImageView) contentView.findViewById(R.id.details_food_image);
+
+            id.setText(foodItem.getId());
+            foodName.setText(foodItem.getFoodName());
+            foodType.setText(foodItem.getFoodType());
+            if (foodItem.getDiscount())
+                discount.setVisibility(View.VISIBLE);
+            else
+                discount.setVisibility(View.INVISIBLE);
+            price.setText(foodItem.getPrice());
+            description.setText(foodItem.getDescription());
+
+            foodImage.setTag(foodItem.getImageUrl());
+            foodImage.setImageDrawable(getActivity().getDrawable(R.drawable.avatar));
+
+            if (foodItem.getImageUrl() != null && !foodItem.getImageUrl().isEmpty() && !foodItem.getImageUrl().equals("")){
+                FoodItemModel.instance.getImage(foodItem.getImageUrl(), new FoodItemModel.GetImageListener() {
+                    @Override
+                    public void onSuccess(Bitmap image) {
+                        String tagUrl = foodImage.getTag().toString();
+                        if (tagUrl.equals(foodItem.getImageUrl())) {
+                            foodImage.setImageBitmap(image);
+                        }
+                    }
+
+                    @Override
+                    public void onFail() {
+
+                    }
+                });
+            }
+        }
 
         return contentView;
     }
@@ -124,9 +170,9 @@ public class FoodDetailsFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        foodItem = Model.instance.getFoodItem("" + foodRow);
+        foodItem = FoodItemModel.instance.getFoodItem(foodId);
         if (foodItem != null){
-            name.setText(foodItem.getName());
+            //name.setText(foodItem.getName());
             id.setText(foodItem.getId());
             description.setText(foodItem.getDescription());
             detailsFragmentListener.updateStudentId(foodId);

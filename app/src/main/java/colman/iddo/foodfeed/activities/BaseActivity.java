@@ -1,6 +1,7 @@
 package colman.iddo.foodfeed.activities;
 
 import android.app.Activity;
+import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,12 +10,19 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import colman.iddo.foodfeed.R;
+import colman.iddo.foodfeed.fragments.FoodEditFragment;
+import colman.iddo.foodfeed.fragments.FoodNewFragment;
 
 import com.google.firebase.auth.FirebaseAuth;
 
 public class BaseActivity extends Activity {
 
     private final String OPTIONS_MENU_TAG = "OptionsMenuTag";
+    String foodIdString;
+
+    public interface ImageListener{
+        void sendImageOnResult(Bundle extras);
+    }
 
     private FirebaseAuth mAuth;
     // TODO?: Remove ProgressDialog
@@ -44,19 +52,30 @@ public class BaseActivity extends Activity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Log.d(OPTIONS_MENU_TAG,"menu item selcted");
+        Log.d(OPTIONS_MENU_TAG,"menu item selected");
         switch (item.getItemId()){
             case R.id.addFoodItemBtn:
                 Log.d(OPTIONS_MENU_TAG,"Add button pressed");
-                /*
-                // TODO: Change accordingly
-                NewStudentFragment newStudentFragment = new NewStudentFragment();
-                getFragmentManager().beginTransaction()
-                        .replace(((ViewGroup) getView().getParent()).getId(), newStudentFragment).addToBackStack(null).commit();
-                */
+                getActionBar().setDisplayHomeAsUpEnabled(true);
+                FoodNewFragment foodNewFragment = FoodNewFragment.newInstance();
+                FragmentTransaction tranAdd = getFragmentManager().beginTransaction();
+                tranAdd.replace(R.id.main_fragment_container, foodNewFragment);
+                tranAdd.addToBackStack(null); //add current fragment to stack
+                tranAdd.commit();
                 break;
+            case R.id.editFoodItemBtn:
+                Log.d(OPTIONS_MENU_TAG,"Edit button pressed");
+                getActionBar().setDisplayHomeAsUpEnabled(true);
+                FoodEditFragment foodEditFragment = FoodEditFragment.newInstance(foodIdString);
+                FragmentTransaction tranEdit = getFragmentManager().beginTransaction();
+                tranEdit.replace(R.id.main_fragment_container, foodEditFragment );
+                tranEdit.addToBackStack("foodDetailsFragment"); //add current fragment to stack
+                tranEdit.commit();
+                break;
+            case android.R.id.home:
+                onBackPressed();
             default:
-                return false;
+                return super.onOptionsItemSelected(item);
         }
         return true;
     }
@@ -79,5 +98,19 @@ public class BaseActivity extends Activity {
 
     protected FirebaseAuth getFirebaseAuth() {
         return mAuth;
+    }
+
+    //Override the onBackPressed in order to return to previous fragment on back button press
+    @Override
+    public void onBackPressed() {
+        if (getFragmentManager().getBackStackEntryCount() == 1) {
+            getActionBar().setDisplayHomeAsUpEnabled(false);
+            getFragmentManager().popBackStack();
+        }
+        if (getFragmentManager().getBackStackEntryCount() > 0) {
+            getFragmentManager().popBackStack();
+        } else {
+            super.onBackPressed();
+        }
     }
 }

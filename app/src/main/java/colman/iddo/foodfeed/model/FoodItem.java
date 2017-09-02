@@ -7,18 +7,22 @@ package colman.iddo.foodfeed.model;
 public class FoodItem {
 
     private String id;
-    private String name;
+    private String foodName;
+    private String foodType;
     private String description;
-    private String imageUrl;
-    private String userId;
-    // TODO: Location, Date?
+    private String price;
+    private Boolean discount;
 
-    public FoodItem(String id, String name, String description, String imageUrl, String userId) {
+    private String imageUrl;
+    private double lastUpdateDate;
+
+    public FoodItem(String id, String foodName, String foodType, String description, int price, Boolean discount ) {
         this.setId(id);
-        this.setName(name);
+        this.setFoodName(foodName);
+        this.setFoodType(foodType);
         this.setDescription(description);
-        this.setImageUrl(imageUrl);
-        this.userId = userId;
+        this.setPrice(price);
+        this.setDiscount(discount);
     }
 
     // Default CTOR, used for initial foods generation
@@ -45,12 +49,12 @@ public class FoodItem {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getFoodName() {
+        return foodName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setFoodName(String foodName) {
+        this.foodName = foodName;
     }
 
     public String getDescription() {
@@ -69,11 +73,23 @@ public class FoodItem {
         this.imageUrl = imageUrl;
     }
 
-    public String getUserId() {
-        return userId;
+    public String getFoodType() { return foodType; }
+
+    public void setFoodType(String foodType) { this.foodType = foodType; }
+
+    public String getPrice() { return price; }
+
+    public void setPrice(int price) { this.price = Integer.toString(price); }
+
+    public Boolean getDiscount() { return discount; }
+
+    public void setDiscount(Boolean discount) { this.discount = discount; }
+
+    public double getLastUpdateDate() {
+        return lastUpdateDate;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setLastUpdateDate(double lastUpdateDate) {
+        this.lastUpdateDate = lastUpdateDate;
     }
 }

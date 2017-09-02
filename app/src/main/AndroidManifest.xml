@@ -18,6 +18,10 @@
         </activity>
         <activity android:name=".activities.BaseActivity" />
         <activity android:name=".activities.MainActivity"></activity>
+
+        <uses-feature android:name="android.hardware.camera"
+            android:required="true" />
+        <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     </application>
 
 </manifest>
