@@ -13,7 +13,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -164,23 +163,19 @@ public class FoodItemsListFragment extends Fragment {
             }
 
             final TextView foodName = (TextView)convertView.findViewById(R.id.row_food_name);
-            final TextView foodId = (TextView)convertView.findViewById(R.id.row_food_id);
-            final ImageView discount = (ImageView)convertView.findViewById(R.id.row_food_discount);
+            final ImageView vegetarian = (ImageView)convertView.findViewById(R.id.row_food_vegetarian);
             final ImageView imageView = (ImageView) convertView.findViewById(R.id.row_food_image);
             final ProgressBar progressBar = (ProgressBar) convertView.findViewById(R.id.row_food_progressbar);
             final TextView foodType = (TextView) convertView.findViewById(R.id.row_food_type);
-            final TextView price = (TextView) convertView.findViewById(R.id.row_food_price);
             final TextView description = (TextView) convertView.findViewById(R.id.row_food_description);
 
             final FoodItem foodItem = data.get(position);
             foodName.setText(foodItem.getFoodName());
-            foodId.setText(foodItem.getId());
-            if (foodItem.getDiscount())
-                discount.setVisibility(View.VISIBLE);
+            if (foodItem.getVegetarian())
+                vegetarian.setVisibility(View.VISIBLE);
             else
-                discount.setVisibility(View.INVISIBLE);
+                vegetarian.setVisibility(View.INVISIBLE);
             foodType.setText(foodItem.getFoodType());
-            price.setText(foodItem.getPrice());
             description.setText(foodItem.getDescription());
 
             imageView.setTag(foodItem.getImageUrl());

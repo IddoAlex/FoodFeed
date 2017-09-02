@@ -4,7 +4,6 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -15,12 +14,12 @@ import java.util.List;
 
 public class FoodSql {
     static final String FOOD_TABLE = "foodItems";
+    static final String ROWID = "ID";
     static final String FOOD_ID = "foodId";
     static final String NAME = "name";
     static final String TYPE = "type";
     static final String DESCRIPTION = "description";
-    static final String PRICE = "price";
-    static final String DISCOUNT = "discount";
+    static final String VEGETARIAN = "vegetarian";
     static final String IMAGE_URL = "imageURL";
     static final String FOOD_USER_ID = "userId";
 
@@ -49,11 +48,9 @@ public class FoodSql {
         values.put(NAME, foodItem.getName());
         values.put(TYPE, foodItem.getType());
         values.put(DESCRIPTION, foodItem.getDescription());
-        values.put(PRICE, foodItem.getPrice());
-        values.put(IMAGE_URL, foodItem.getImageUrl());
+        values.put(VEGETARIAN, foodItem.getVegetarian() ? 1 : 0);
         values.put(FOOD_USER_ID, foodItem.getUserId());
-
-        values.put(DISCOUNT, foodItem.getDiscount() ? 1 : 0);
+        values.put(IMAGE_URL, foodItem.getImageUrl());
 
         db.insert(FOOD_TABLE, FOOD_ID, values);
     }
@@ -64,11 +61,10 @@ public class FoodSql {
         values.put(NAME, foodItem.getFoodName());
         values.put(TYPE, foodItem.getFoodType());
         values.put(DESCRIPTION, foodItem.getDescription());
-        values.put(PRICE, foodItem.getPrice());
-        if (foodItem.getDiscount())
-            values.put(DISCOUNT, 1);
+        if (foodItem.getVegetarian())
+            values.put(VEGETARIAN, 1);
         else
-            values.put(DISCOUNT, 0);
+            values.put(VEGETARIAN, 0);
         values.put(IMAGE_URL, foodItem.getImageUrl());
 
         db.update(FOOD_TABLE, values, ROWID + "= ?", new String[] { Integer.toString(getRowIndex(db, foodItem.getId())) });
@@ -77,7 +73,6 @@ public class FoodSql {
     static FoodItem getFoodItem(SQLiteDatabase db, String foodItemId) {
         String[] selectionArgs = {foodItemId};
         Cursor cursor = db.query(FOOD_TABLE, null, FOOD_ID + " = ?", selectionArgs, null, null, null);
-
         /**
          * If we can move the cursor to the first row, it means we have at least one student in the
          * list, that we would return. Otherwise, we'll return just null.
@@ -119,10 +114,10 @@ public class FoodSql {
 
     static void toggleChecked(SQLiteDatabase db, FoodItem foodItem){
         ContentValues values = new ContentValues();
-        if (foodItem.getDiscount())
-            values.put(DISCOUNT, 1);
+        if (foodItem.getVegetarian())
+            values.put(VEGETARIAN, 1);
         else
-            values.put(DISCOUNT, 0);
+            values.put(VEGETARIAN, 0);
 
         db.update(FOOD_TABLE, values, ROWID + "=" + getRowIndex(db, foodItem.getId()), null);
     }
@@ -139,11 +134,8 @@ public class FoodSql {
                 NAME + " TEXT, " +
                 TYPE + " TEXT, " +
                 DESCRIPTION + " TEXT, " +
-                PRICE + " NUMBER, " +
-                DISCOUNT + " NUMBER, " +
-                IMAGE_URL + " TEXT, " +
-                FOOD_USER_ID + " TEXT " +
-                ")");
+                VEGETARIAN + " NUMBER, " +
+                IMAGE_URL + " TEXT)");
     }
 
     /**
@@ -161,8 +153,7 @@ public class FoodSql {
         int nameIndex = cursor.getColumnIndex(NAME);
         int typeIndex = cursor.getColumnIndex(TYPE);
         int descriptionIndex = cursor.getColumnIndex(DESCRIPTION);
-        int priceIndex = cursor.getColumnIndex(PRICE);
-        int discountIndex = cursor.getColumnIndex(DISCOUNT);
+        int vegetarianIndex = cursor.getColumnIndex(VEGETARIAN);
         int imageUrlIndex = cursor.getColumnIndex(IMAGE_URL);
 
         FoodItem foodItem = new FoodItem();
@@ -170,8 +161,7 @@ public class FoodSql {
         foodItem.setFoodName(cursor.getString(nameIndex));
         foodItem.setFoodType(cursor.getString(typeIndex));
         foodItem.setDescription(cursor.getString(descriptionIndex));
-        foodItem.setPrice(cursor.getInt(priceIndex));
-        foodItem.setDiscount(cursor.getInt(discountIndex) == 1);
+        foodItem.setVegetarian(cursor.getInt(vegetarianIndex) == 1);
         foodItem.setImageUrl(cursor.getString(imageUrlIndex));
 
         return foodItem;

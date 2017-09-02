@@ -7,25 +7,20 @@ package colman.iddo.foodfeed.model;
 public class FoodItem {
 
     private String id;
-    private String name;
-    private String type;
+    private String foodName;
+    private String foodType;
     private String description;
-    private String price;
-    private Boolean discount;
+    private Boolean vegetarian;
+
     private String imageUrl;
-    private String userId;
     private double lastUpdateDate;
 
-    public FoodItem(String id, String name, String type, String description, int price, Boolean discount, String imageUrl, String userId, double lastUpdateDate) {
+    public FoodItem(String id, String foodName, String foodType, String description, Boolean vegetarian) {
         this.setId(id);
-        this.setName(name);
-        this.setType(type);
+        this.setFoodName(foodName);
+        this.setFoodType(foodType);
         this.setDescription(description);
-        this.setPrice(price);
-        this.setDiscount(discount);
-        this.setImageUrl(imageUrl);
-        this.setUserId(userId);
-        this.setLastUpdateDate(lastUpdateDate);
+        this.setVegetarian(vegetarian);
     }
 
     // Default CTOR, used for initial foods generation
@@ -52,12 +47,12 @@ public class FoodItem {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getFoodName() {
+        return foodName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setFoodName(String foodName) {
+        this.foodName = foodName;
     }
 
     public String getDescription() {
@@ -76,25 +71,13 @@ public class FoodItem {
         this.imageUrl = imageUrl;
     }
 
-    public String getType() { return type; }
+    public String getFoodType() { return foodType; }
 
-    public void setFoodType(String foodType) { this.type = foodType; }
+    public void setFoodType(String foodType) { this.foodType = foodType; }
 
-    public String getPrice() { return price; }
+    public Boolean getVegetarian() { return vegetarian; }
 
-    public void setPrice(int price) { this.price = Integer.toString(price); }
-
-    public Boolean getDiscount() { return discount; }
-
-    public void setDiscount(Boolean discount) { this.discount = discount; }
-
-    public double getLastUpdateDate() {
-        return lastUpdateDate;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
+    public void setVegetarian(Boolean vegetarian) { this.vegetarian = vegetarian; }
 
     public double getLastUpdateDate() {
         return lastUpdateDate;

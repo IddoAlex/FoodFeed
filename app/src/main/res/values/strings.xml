@@ -7,7 +7,7 @@
     <string name="description">Description: </string>
     <string name="foodType">Food type: </string>
     <string name="foodPrice">Price: </string>
-    <string name="foodDiscount">Mark as discount</string>
+    <string name="foodDiscount">Mark as vegetarian</string>
 
     <!-- Choose image dialog -->
     <string name="img_dialog_title">Choose image from...</string>
