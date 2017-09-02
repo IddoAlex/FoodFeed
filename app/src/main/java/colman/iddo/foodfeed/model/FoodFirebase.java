@@ -43,13 +43,16 @@ public class FoodFirebase {
 
     static final String FOOD_TABLE = "foodItems";
     static final String FOOD_ID = "foodId";
+<<<<<<< HEAD
     static final String NAME = "foodName";
     static final String TYPE = "foodType";
     static final String DESCRIPTION = "description";
     static final String PRICE = "price";
     static final String DISCOUNT = "discount";
     static final String IMAGE_URL = "imageURL";
+    static final String USER_ID = "userId";
     static final String FOOD_LAST_UPDATE_DATE = "lasUpdateDate";
+
 
     public void addOrUpdateFoodItem(FoodItem foodItem) {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -63,6 +66,7 @@ public class FoodFirebase {
         value.put(PRICE, foodItem.getPrice());
         value.put(DISCOUNT, foodItem.getDiscount());
         value.put(IMAGE_URL, foodItem.getImageUrl());
+        value.put(USER_ID, foodItem.getUserId());
         value.put(FOOD_LAST_UPDATE_DATE, ServerValue.TIMESTAMP);
 
         myRef.child(foodItem.getId()).setValue(value);
@@ -116,31 +120,6 @@ public class FoodFirebase {
                 });
     }
 
-  /*  public boolean checkIfIdAlreadyExists(String foodId){
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference(FOOD_TABLE);
-        final boolean idExists;
-
-        myRef.child(foodId).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()){
-                    idExists = true;
-
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-        if (getFoodItem(foodItemId))
-            return false;
-        else
-            return true;
-    }*/
-
     public void saveImage(Bitmap imageBmp, String name, final FoodItemModel.SaveImageListener listener){
         FirebaseStorage storage = FirebaseStorage.getInstance();
 
@@ -184,5 +163,4 @@ public class FoodFirebase {
             }
         });
     }
-
 }

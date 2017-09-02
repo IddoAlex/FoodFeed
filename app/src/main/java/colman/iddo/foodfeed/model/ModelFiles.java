@@ -75,6 +75,8 @@ public class ModelFiles {
             Log.d("tag","got image from cache: " + imageFileName);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         return bitmap;
     }

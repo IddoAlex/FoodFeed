@@ -12,7 +12,7 @@ import android.widget.Toast;
 import colman.iddo.foodfeed.R;
 import colman.iddo.foodfeed.fragments.FoodItemsListFragment;
 
-public class MainActivity extends BaseActivity{
+public class MainActivity extends BaseActivity {
 
     private static Context context;
     private final String TAG = "MainActivity";

@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -14,14 +15,14 @@ import java.util.List;
 
 public class FoodSql {
     static final String FOOD_TABLE = "foodItems";
-    static final String ROWID = "ID";
     static final String FOOD_ID = "foodId";
-    static final String NAME = "foodName";
-    static final String TYPE = "foodType";
+    static final String NAME = "name";
+    static final String TYPE = "type";
     static final String DESCRIPTION = "description";
     static final String PRICE = "price";
     static final String DISCOUNT = "discount";
     static final String IMAGE_URL = "imageURL";
+    static final String FOOD_USER_ID = "userId";
 
     static List<FoodItem> getAllFoodItems(SQLiteDatabase db) {
         /**
@@ -45,15 +46,14 @@ public class FoodSql {
     static void addFoodItem(SQLiteDatabase db, FoodItem foodItem) {
         ContentValues values = new ContentValues();
         values.put(FOOD_ID, foodItem.getId());
-        values.put(NAME, foodItem.getFoodName());
-        values.put(TYPE, foodItem.getFoodType());
+        values.put(NAME, foodItem.getName());
+        values.put(TYPE, foodItem.getType());
         values.put(DESCRIPTION, foodItem.getDescription());
         values.put(PRICE, foodItem.getPrice());
-        if (foodItem.getDiscount())
-            values.put(DISCOUNT, 1);
-        else
-            values.put(DISCOUNT, 0);
         values.put(IMAGE_URL, foodItem.getImageUrl());
+        values.put(FOOD_USER_ID, foodItem.getUserId());
+
+        values.put(DISCOUNT, foodItem.getDiscount() ? 1 : 0);
 
         db.insert(FOOD_TABLE, FOOD_ID, values);
     }
@@ -76,7 +76,8 @@ public class FoodSql {
 
     static FoodItem getFoodItem(SQLiteDatabase db, String foodItemId) {
         String[] selectionArgs = {foodItemId};
-        Cursor cursor = db.query(FOOD_TABLE, null, FOOD_ID + " = ? ", selectionArgs, null, null, null);
+        Cursor cursor = db.query(FOOD_TABLE, null, FOOD_ID + " = ?", selectionArgs, null, null, null);
+
         /**
          * If we can move the cursor to the first row, it means we have at least one student in the
          * list, that we would return. Otherwise, we'll return just null.
@@ -140,7 +141,8 @@ public class FoodSql {
                 DESCRIPTION + " TEXT, " +
                 PRICE + " NUMBER, " +
                 DISCOUNT + " NUMBER, " +
-                IMAGE_URL + " TEXT " +
+                IMAGE_URL + " TEXT, " +
+                FOOD_USER_ID + " TEXT " +
                 ")");
     }
 
