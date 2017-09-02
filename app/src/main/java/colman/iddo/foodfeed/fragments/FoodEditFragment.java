@@ -106,8 +106,8 @@ public class FoodEditFragment extends Fragment {
 
             id.setText(foodItem.getId());
             id.setEnabled(false); //User can't edit the food's ID after it was created
-            foodName.setText(foodItem.getFoodName());
-            foodType.setText(foodItem.getFoodType());
+            foodName.setText(foodItem.getName());
+            foodType.setText(foodItem.getType());
             discount.setChecked(foodItem.getDiscount());
             price.setText(foodItem.getPrice());
             description.setText(foodItem.getDescription());
@@ -216,14 +216,14 @@ public class FoodEditFragment extends Fragment {
         String priceNew = ((EditText)getView().findViewById(R.id.edit_price)).getText().toString();
         Boolean discountNew = ((CheckBox)getView().findViewById(R.id.edit_discount)).isChecked();
         progressBar.setVisibility(View.VISIBLE);
-        final FoodItem foodItem = new FoodItem(idNew, nameNew, typeNew, descriptionNew, Integer.parseInt(priceNew), discountNew);
+        final FoodItem newFoodItem = new FoodItem(idNew, nameNew, typeNew, descriptionNew, Integer.parseInt(priceNew), discountNew, null, foodItem.getUserId());
 
         if (imageBitmap != null) {
-            FoodItemModel.instance.saveImage(imageBitmap, foodItem.getId() + ".jpeg", new FoodItemModel.SaveImageListener() {
+            FoodItemModel.instance.saveImage(imageBitmap, newFoodItem.getId() + ".jpeg", new FoodItemModel.SaveImageListener() {
                 @Override
                 public void complete(String url) {
-                    foodItem.setImageUrl(url);
-                    FoodItemModel.instance.updateFoodItem(foodItem);
+                    newFoodItem.setImageUrl(url);
+                    FoodItemModel.instance.updateFoodItem(newFoodItem);
                     progressBar.setVisibility(GONE);
                     showMessage("Edit Food Details", "Food updated successfully");
                     backToList();
@@ -236,7 +236,7 @@ public class FoodEditFragment extends Fragment {
                 }
             });
         }else{
-            FoodItemModel.instance.updateFoodItem(foodItem);
+            FoodItemModel.instance.updateFoodItem(newFoodItem);
             progressBar.setVisibility(GONE);
             showMessage("Edit Food Details", "Food updated successfully");
             backToList();

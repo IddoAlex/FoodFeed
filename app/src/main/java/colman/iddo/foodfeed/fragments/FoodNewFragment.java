@@ -106,7 +106,7 @@ public class FoodNewFragment extends FoodEditFragment {
         Boolean discountNew = ((CheckBox)getView().findViewById(R.id.edit_discount)).isChecked();
 
         progressBar.setVisibility(View.VISIBLE);
-        final FoodItem foodItem = new FoodItem(idNew, nameNew, typeNew, descriptionNew, Integer.parseInt(priceNew), discountNew);
+        final FoodItem foodItem = new FoodItem(idNew, nameNew, typeNew, descriptionNew, Integer.parseInt(priceNew), discountNew, null, null);
 
         if (imageBitmap != null) {
             FoodItemModel.instance.saveImage(imageBitmap, foodItem.getId() + ".jpeg", new FoodItemModel.SaveImageListener() {

@@ -61,8 +61,8 @@ public class FoodSql {
     static void updateFoodItem(SQLiteDatabase db, FoodItem foodItem){
         ContentValues values = new ContentValues();
         values.put(FOOD_ID, foodItem.getId());
-        values.put(NAME, foodItem.getFoodName());
-        values.put(TYPE, foodItem.getFoodType());
+        values.put(NAME, foodItem.getName());
+        values.put(TYPE, foodItem.getType());
         values.put(DESCRIPTION, foodItem.getDescription());
         values.put(PRICE, foodItem.getPrice());
         if (foodItem.getDiscount())
@@ -71,7 +71,7 @@ public class FoodSql {
             values.put(DISCOUNT, 0);
         values.put(IMAGE_URL, foodItem.getImageUrl());
 
-        db.update(FOOD_TABLE, values, ROWID + "= ?", new String[] { Integer.toString(getRowIndex(db, foodItem.getId())) });
+        db.update(FOOD_TABLE, values, FOOD_ID + "= ?", new String[] { foodItem.getId() });
     }
 
     static FoodItem getFoodItem(SQLiteDatabase db, String foodItemId) {
@@ -104,19 +104,6 @@ public class FoodSql {
         return true;
     }
 
-    static int getRowIndex(SQLiteDatabase db, String studentId) {
-        String[] selectionArgs = { studentId };
-        Cursor cursor = db.query(FOOD_TABLE, null, FOOD_ID + " = ?", selectionArgs, null, null, null);
-        cursor.moveToFirst();
-
-        /**
-         * The row Index is the row's auto increment integer primary key value
-         */
-        int foodRowIndex = cursor.getColumnIndex(ROWID);
-        String foodRow = cursor.getString(foodRowIndex);
-        return Integer.parseInt(foodRow);
-    }
-
     static void toggleChecked(SQLiteDatabase db, FoodItem foodItem){
         ContentValues values = new ContentValues();
         if (foodItem.getDiscount())
@@ -124,7 +111,7 @@ public class FoodSql {
         else
             values.put(DISCOUNT, 0);
 
-        db.update(FOOD_TABLE, values, ROWID + "=" + getRowIndex(db, foodItem.getId()), null);
+        db.update(FOOD_TABLE, values, FOOD_ID + "=" + foodItem.getId(), null);
     }
 
     /**
@@ -164,15 +151,17 @@ public class FoodSql {
         int priceIndex = cursor.getColumnIndex(PRICE);
         int discountIndex = cursor.getColumnIndex(DISCOUNT);
         int imageUrlIndex = cursor.getColumnIndex(IMAGE_URL);
+        int imageUserId = cursor.getColumnIndex(FOOD_USER_ID);
 
         FoodItem foodItem = new FoodItem();
         foodItem.setId(cursor.getString(idIndex));
-        foodItem.setFoodName(cursor.getString(nameIndex));
-        foodItem.setFoodType(cursor.getString(typeIndex));
+        foodItem.setName(cursor.getString(nameIndex));
+        foodItem.setType(cursor.getString(typeIndex));
         foodItem.setDescription(cursor.getString(descriptionIndex));
         foodItem.setPrice(cursor.getInt(priceIndex));
         foodItem.setDiscount(cursor.getInt(discountIndex) == 1);
         foodItem.setImageUrl(cursor.getString(imageUrlIndex));
+        foodItem.setUserId(cursor.getString(imageUserId));
 
         return foodItem;
     }

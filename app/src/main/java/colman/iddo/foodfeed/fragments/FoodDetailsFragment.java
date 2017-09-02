@@ -111,8 +111,8 @@ public class FoodDetailsFragment extends Fragment {
             foodImage = (ImageView) contentView.findViewById(R.id.details_food_image);
 
             id.setText(foodItem.getId());
-            foodName.setText(foodItem.getFoodName());
-            foodType.setText(foodItem.getFoodType());
+            foodName.setText(foodItem.getName());
+            foodType.setText(foodItem.getType());
             if (foodItem.getDiscount())
                 discount.setVisibility(View.VISIBLE);
             else

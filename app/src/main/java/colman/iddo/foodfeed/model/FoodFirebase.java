@@ -43,7 +43,6 @@ public class FoodFirebase {
 
     static final String FOOD_TABLE = "foodItems";
     static final String FOOD_ID = "foodId";
-<<<<<<< HEAD
     static final String NAME = "foodName";
     static final String TYPE = "foodType";
     static final String DESCRIPTION = "description";
@@ -60,8 +59,8 @@ public class FoodFirebase {
 
         Map<String, Object> value = new HashMap<>();
         value.put(FOOD_ID, foodItem.getId());
-        value.put(NAME, foodItem.getFoodName());
-        value.put(TYPE, foodItem.getFoodType());
+        value.put(NAME, foodItem.getName());
+        value.put(TYPE, foodItem.getName());
         value.put(DESCRIPTION, foodItem.getDescription());
         value.put(PRICE, foodItem.getPrice());
         value.put(DISCOUNT, foodItem.getDiscount());

@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import colman.iddo.foodfeed.R;
 import colman.iddo.foodfeed.fragments.FoodItemsListFragment;
+import colman.iddo.foodfeed.model.AuthFirebase;
 
 public class MainActivity extends BaseActivity {
 
@@ -65,7 +66,7 @@ public class MainActivity extends BaseActivity {
     }
 
     private void signOut() {
-        getFirebaseAuth().signOut();
+        AuthFirebase.instance.getFirebaseAuth().signOut();
 
         Intent i = new Intent(this, LoginActivity.class);
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

@@ -16,7 +16,7 @@ public class FoodItem {
     private String userId;
     private double lastUpdateDate;
 
-    public FoodItem(String id, String name, String type, String description, int price, Boolean discount, String imageUrl, String userId, double lastUpdateDate) {
+    public FoodItem(String id, String name, String type, String description, int price, Boolean discount, String imageUrl, String userId) {
         this.setId(id);
         this.setName(name);
         this.setType(type);
@@ -25,7 +25,6 @@ public class FoodItem {
         this.setDiscount(discount);
         this.setImageUrl(imageUrl);
         this.setUserId(userId);
-        this.setLastUpdateDate(lastUpdateDate);
     }
 
     // Default CTOR, used for initial foods generation
@@ -78,7 +77,7 @@ public class FoodItem {
 
     public String getType() { return type; }
 
-    public void setFoodType(String foodType) { this.type = foodType; }
+    public void setType(String foodType) { this.type = foodType; }
 
     public String getPrice() { return price; }
 
@@ -88,12 +87,12 @@ public class FoodItem {
 
     public void setDiscount(Boolean discount) { this.discount = discount; }
 
-    public double getLastUpdateDate() {
-        return lastUpdateDate;
-    }
-
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    public String getUserId() {
+        return userId;
     }
 
     public double getLastUpdateDate() {

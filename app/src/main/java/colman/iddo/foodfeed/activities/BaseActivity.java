@@ -13,8 +13,6 @@ import colman.iddo.foodfeed.R;
 import colman.iddo.foodfeed.fragments.FoodEditFragment;
 import colman.iddo.foodfeed.fragments.FoodNewFragment;
 
-import com.google.firebase.auth.FirebaseAuth;
-
 public class BaseActivity extends Activity {
 
     private final String OPTIONS_MENU_TAG = "OptionsMenuTag";
@@ -24,7 +22,7 @@ public class BaseActivity extends Activity {
         void sendImageOnResult(Bundle extras);
     }
 
-    private FirebaseAuth mAuth;
+
     // TODO?: Remove ProgressDialog
     private ProgressDialog mProgressDialog;
     private String _loadingString = "Loading...";
@@ -32,7 +30,6 @@ public class BaseActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mAuth = FirebaseAuth.getInstance();
     }
 
     @Override
@@ -94,10 +91,6 @@ public class BaseActivity extends Activity {
         if (mProgressDialog != null && mProgressDialog.isShowing()) {
             mProgressDialog.dismiss();
         }
-    }
-
-    protected FirebaseAuth getFirebaseAuth() {
-        return mAuth;
     }
 
     //Override the onBackPressed in order to return to previous fragment on back button press

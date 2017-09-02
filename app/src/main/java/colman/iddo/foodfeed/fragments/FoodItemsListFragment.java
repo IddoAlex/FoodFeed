@@ -173,13 +173,13 @@ public class FoodItemsListFragment extends Fragment {
             final TextView description = (TextView) convertView.findViewById(R.id.row_food_description);
 
             final FoodItem foodItem = data.get(position);
-            foodName.setText(foodItem.getFoodName());
+            foodName.setText(foodItem.getName());
             foodId.setText(foodItem.getId());
             if (foodItem.getDiscount())
                 discount.setVisibility(View.VISIBLE);
             else
                 discount.setVisibility(View.INVISIBLE);
-            foodType.setText(foodItem.getFoodType());
+            foodType.setText(foodItem.getType());
             price.setText(foodItem.getPrice());
             description.setText(foodItem.getDescription());
 

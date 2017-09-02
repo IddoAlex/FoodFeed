@@ -92,6 +92,8 @@ public class FoodItemModel {
     }
 
     public void addFoodItem(FoodItem foodItem) {
+        foodItem.setUserId(AuthFirebase.instance.getCurrentFirebaseUserId());
+
         // Because observing addition to Firebase, foodItem will be added to local SQL db too
         foodFirebase.addOrUpdateFoodItem(foodItem);
     }
