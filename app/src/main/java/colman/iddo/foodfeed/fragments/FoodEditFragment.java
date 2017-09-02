@@ -98,7 +98,7 @@ public class FoodEditFragment extends Fragment {
             progressBar = (ProgressBar) contentView.findViewById(R.id.edit_progressbar);
             progressBar.setVisibility(GONE);
 
-            foodName.setText(foodItem.getFoodName());
+            foodName.setText(foodItem.getName());
             foodType.setText(foodItem.getFoodType());
             vegetarian.setChecked(foodItem.getVegetarian());
             description.setText(foodItem.getDescription());
@@ -200,21 +200,23 @@ public class FoodEditFragment extends Fragment {
     }
 
     public void saveFoodItem(String foodId){
-        //TODO Add GUID
         String idNew = foodId;
         String nameNew = ((EditText) getView().findViewById(R.id.edit_name)).getText().toString();
         String typeNew = ((EditText)getView().findViewById(R.id.edit_type)).getText().toString();
         String descriptionNew = ((EditText)getView().findViewById(R.id.edit_description)).getText().toString();
         Boolean vegetarianNew = ((CheckBox)getView().findViewById(R.id.edit_vegetarian)).isChecked();
         progressBar.setVisibility(View.VISIBLE);
-        final FoodItem foodItem = new FoodItem(idNew, nameNew, typeNew, descriptionNew, vegetarianNew);
+        final FoodItem foodItemNew = new FoodItem(idNew, nameNew, typeNew, descriptionNew, vegetarianNew, foodItem.getImageUrl(), foodItem.getUserId(), 0);
+        // Note: The last FoodItem's CTOR value (lastUpdateDate) is initiated as 0, as it's value
+        // is necessary to be used only when saving the item in FireBase.
+        // It is done using FoodFirebase's addOrUpdateFoodItem method, by inserting timestamp to it.
 
         if (imageBitmap != null) {
-            FoodItemModel.instance.saveImage(imageBitmap, foodItem.getId() + ".jpeg", new FoodItemModel.SaveImageListener() {
+            FoodItemModel.instance.saveImage(imageBitmap, foodItemNew.getId() + ".jpeg", new FoodItemModel.SaveImageListener() {
                 @Override
                 public void complete(String url) {
-                    foodItem.setImageUrl(url);
-                    FoodItemModel.instance.updateFoodItem(foodItem);
+                    foodItemNew.setImageUrl(url);
+                    FoodItemModel.instance.updateFoodItem(foodItemNew);
                     progressBar.setVisibility(GONE);
                     showMessage("Edit Food Details", "Food updated successfully");
                     backToList();
@@ -227,7 +229,7 @@ public class FoodEditFragment extends Fragment {
                 }
             });
         }else{
-            FoodItemModel.instance.updateFoodItem(foodItem);
+            FoodItemModel.instance.updateFoodItem(foodItemNew);
             progressBar.setVisibility(GONE);
             showMessage("Edit Food Details", "Food updated successfully");
             backToList();

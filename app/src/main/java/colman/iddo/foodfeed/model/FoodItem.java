@@ -7,20 +7,24 @@ package colman.iddo.foodfeed.model;
 public class FoodItem {
 
     private String id;
-    private String foodName;
-    private String foodType;
+    private String name;
+    private String type;
     private String description;
     private Boolean vegetarian;
+    private String userId;
 
     private String imageUrl;
     private double lastUpdateDate;
 
-    public FoodItem(String id, String foodName, String foodType, String description, Boolean vegetarian) {
+    public FoodItem(String id, String name, String type, String description, Boolean vegetarian, String imageUrl, String userId, double lastUpdateDate) {
         this.setId(id);
-        this.setFoodName(foodName);
-        this.setFoodType(foodType);
+        this.setName(name);
+        this.setFoodType(type);
         this.setDescription(description);
         this.setVegetarian(vegetarian);
+        this.setImageUrl(imageUrl);
+        this.setUserId(userId);
+        this.setLastUpdateDate(lastUpdateDate);
     }
 
     // Default CTOR, used for initial foods generation
@@ -47,12 +51,12 @@ public class FoodItem {
         this.id = id;
     }
 
-    public String getFoodName() {
-        return foodName;
+    public String getName() {
+        return name;
     }
 
-    public void setFoodName(String foodName) {
-        this.foodName = foodName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getDescription() {
@@ -71,9 +75,13 @@ public class FoodItem {
         this.imageUrl = imageUrl;
     }
 
-    public String getFoodType() { return foodType; }
+    public String getFoodType() { return type; }
 
-    public void setFoodType(String foodType) { this.foodType = foodType; }
+    public void setFoodType(String type) { this.type = type; }
+
+    public String getUserId() { return userId; }
+
+    public void setUserId(String userId) { this.userId = userId; }
 
     public Boolean getVegetarian() { return vegetarian; }
 

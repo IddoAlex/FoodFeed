@@ -94,7 +94,8 @@ public class FoodNewFragment extends FoodEditFragment {
         Boolean vegetarian = ((CheckBox)getView().findViewById(R.id.edit_vegetarian)).isChecked();
 
         progressBar.setVisibility(View.VISIBLE);
-        final FoodItem foodItem = new FoodItem(idNew, nameNew, typeNew, descriptionNew, vegetarian);
+        final FoodItem foodItem = new FoodItem(idNew, nameNew, typeNew, descriptionNew, vegetarian, null, null, 0);
+        //TODO Change userId null to the user's emailaddress
 
         if (imageBitmap != null) {
             FoodItemModel.instance.saveImage(imageBitmap, foodItem.getId() + ".jpeg", new FoodItemModel.SaveImageListener() {
@@ -103,20 +104,20 @@ public class FoodNewFragment extends FoodEditFragment {
                     foodItem.setImageUrl(url);
                     FoodItemModel.instance.addFoodItem(foodItem);
                     progressBar.setVisibility(GONE);
-                    showMessage("Add New Student", "New student added successfully");
+                    showMessage("Add New Food", "New food added successfully");
                     backToList();
                 }
 
                 @Override
                 public void fail() {
                     progressBar.setVisibility(GONE);
-                    showMessage("Add New Student", "Failed adding new student");
+                    showMessage("Add New Food", "Failed adding new food");
                 }
             });
         }else{
             FoodItemModel.instance.addFoodItem(foodItem);
             progressBar.setVisibility(GONE);
-            showMessage("Add New Student", "New student added successfully");
+            showMessage("Add New Food", "New food added successfully");
             backToList();
         }
     }

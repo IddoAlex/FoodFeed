@@ -17,7 +17,7 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class BaseActivity extends Activity {
 
-    private final String OPTIONS_MENU_TAG = "OptionsMenuTag";
+
     String foodIdString;
 
     public interface ImageListener{
@@ -47,36 +47,6 @@ public class BaseActivity extends Activity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main, menu);
 
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        Log.d(OPTIONS_MENU_TAG,"menu item selected");
-        switch (item.getItemId()){
-            case R.id.addFoodItemBtn:
-                Log.d(OPTIONS_MENU_TAG,"Add button pressed");
-                getActionBar().setDisplayHomeAsUpEnabled(true);
-                FoodNewFragment foodNewFragment = FoodNewFragment.newInstance();
-                FragmentTransaction tranAdd = getFragmentManager().beginTransaction();
-                tranAdd.replace(R.id.main_fragment_container, foodNewFragment);
-                tranAdd.addToBackStack(null); //add current fragment to stack
-                tranAdd.commit();
-                break;
-            case R.id.editFoodItemBtn:
-                Log.d(OPTIONS_MENU_TAG,"Edit button pressed");
-                getActionBar().setDisplayHomeAsUpEnabled(true);
-                FoodEditFragment foodEditFragment = FoodEditFragment.newInstance(foodIdString);
-                FragmentTransaction tranEdit = getFragmentManager().beginTransaction();
-                tranEdit.replace(R.id.main_fragment_container, foodEditFragment );
-                tranEdit.addToBackStack("foodDetailsFragment"); //add current fragment to stack
-                tranEdit.commit();
-                break;
-            case android.R.id.home:
-                onBackPressed();
-            default:
-                return super.onOptionsItemSelected(item);
-        }
         return true;
     }
 

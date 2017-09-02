@@ -1,7 +1,6 @@
 package colman.iddo.foodfeed.fragments;
 
 import android.app.Fragment;
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
@@ -85,7 +84,7 @@ public class FoodDetailsFragment extends Fragment {
             description = (TextView) contentView.findViewById(R.id.details_food_description);
             foodImage = (ImageView) contentView.findViewById(R.id.details_food_image);
 
-            foodName.setText(foodItem.getFoodName());
+            foodName.setText(foodItem.getName());
             foodType.setText(foodItem.getFoodType());
             if (foodItem.getVegetarian())
                 vegetarian.setVisibility(View.VISIBLE);
