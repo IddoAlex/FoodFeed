@@ -13,26 +13,14 @@ import colman.iddo.foodfeed.R;
 import colman.iddo.foodfeed.fragments.FoodEditFragment;
 import colman.iddo.foodfeed.fragments.FoodNewFragment;
 
-import com.google.firebase.auth.FirebaseAuth;
-
 public class BaseActivity extends Activity {
 
-    private final String OPTIONS_MENU_TAG = "OptionsMenuTag";
-    String foodIdString;
-
-    public interface ImageListener{
-        void sendImageOnResult(Bundle extras);
-    }
-
-    private FirebaseAuth mAuth;
-    // TODO?: Remove ProgressDialog
     private ProgressDialog mProgressDialog;
     private String _loadingString = "Loading...";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mAuth = FirebaseAuth.getInstance();
     }
 
     @Override
@@ -50,36 +38,6 @@ public class BaseActivity extends Activity {
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        Log.d(OPTIONS_MENU_TAG,"menu item selected");
-        switch (item.getItemId()){
-            case R.id.addFoodItemBtn:
-                Log.d(OPTIONS_MENU_TAG,"Add button pressed");
-                getActionBar().setDisplayHomeAsUpEnabled(true);
-                FoodNewFragment foodNewFragment = FoodNewFragment.newInstance();
-                FragmentTransaction tranAdd = getFragmentManager().beginTransaction();
-                tranAdd.replace(R.id.main_fragment_container, foodNewFragment);
-                tranAdd.addToBackStack(null); //add current fragment to stack
-                tranAdd.commit();
-                break;
-            case R.id.editFoodItemBtn:
-                Log.d(OPTIONS_MENU_TAG,"Edit button pressed");
-                getActionBar().setDisplayHomeAsUpEnabled(true);
-                FoodEditFragment foodEditFragment = FoodEditFragment.newInstance(foodIdString);
-                FragmentTransaction tranEdit = getFragmentManager().beginTransaction();
-                tranEdit.replace(R.id.main_fragment_container, foodEditFragment );
-                tranEdit.addToBackStack("foodDetailsFragment"); //add current fragment to stack
-                tranEdit.commit();
-                break;
-            case android.R.id.home:
-                onBackPressed();
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-        return true;
-    }
-
     public void showProgressDialog() {
         if (mProgressDialog == null) {
             mProgressDialog = new ProgressDialog(this);
@@ -94,10 +52,6 @@ public class BaseActivity extends Activity {
         if (mProgressDialog != null && mProgressDialog.isShowing()) {
             mProgressDialog.dismiss();
         }
-    }
-
-    protected FirebaseAuth getFirebaseAuth() {
-        return mAuth;
     }
 
     //Override the onBackPressed in order to return to previous fragment on back button press

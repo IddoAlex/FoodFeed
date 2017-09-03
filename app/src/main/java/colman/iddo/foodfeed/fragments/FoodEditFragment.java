@@ -1,14 +1,14 @@
 package colman.iddo.foodfeed.fragments;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.Fragment;
-import android.content.Context;
+import android.app.FragmentManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -37,24 +37,22 @@ public class FoodEditFragment extends Fragment {
     protected FoodItem foodItem;
     protected ProgressBar progressBar;
 
-    protected TextView id;
     protected TextView foodName;
     protected ImageView foodImage;
     protected TextView foodType;
-    protected CheckBox discount;
-    protected TextView price;
+    protected CheckBox vegetarian;
     protected TextView description;
 
     protected Bitmap imageBitmap;
     protected String foodIdString;
 
     // the fragment initialization parameters
-    private static final String FOOD_ID = "FOOD_ID";
+    private static final String FOOD_ID = "fid";
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
-        menu.findItem(R.id.addFoodItemBtn).setVisible(false).setEnabled(false);
-        menu.findItem(R.id.editFoodItemBtn).setVisible(false).setEnabled(false);
+        menu.findItem(R.id.menu_add_food).setVisible(false).setEnabled(false);
+        menu.findItem(R.id.menu_edit_food).setVisible(false).setEnabled(false);
     }
 
     public FoodEditFragment() {
@@ -93,23 +91,18 @@ public class FoodEditFragment extends Fragment {
         if (myBundle != null){
             this.foodIdString = myBundle.getString(FOOD_ID);
             foodItem = FoodItemModel.instance.getFoodItem(foodIdString);
-            id = (EditText) contentView.findViewById(R.id.edit_id);
             foodName = (EditText) contentView.findViewById(R.id.edit_name);
             foodImage = (ImageView) contentView.findViewById(R.id.edit_image);
             foodType = (EditText) contentView.findViewById(R.id.edit_type);
-            discount = (CheckBox) contentView.findViewById(R.id.edit_discount);
-            price = (EditText) contentView.findViewById(R.id.edit_price);
+            vegetarian = (CheckBox) contentView.findViewById(R.id.edit_vegetarian);
             description = (EditText) contentView.findViewById(R.id.edit_description);
 
             progressBar = (ProgressBar) contentView.findViewById(R.id.edit_progressbar);
             progressBar.setVisibility(GONE);
 
-            id.setText(foodItem.getId());
-            id.setEnabled(false); //User can't edit the food's ID after it was created
-            foodName.setText(foodItem.getFoodName());
-            foodType.setText(foodItem.getFoodType());
-            discount.setChecked(foodItem.getDiscount());
-            price.setText(foodItem.getPrice());
+            foodName.setText(foodItem.getName());
+            foodType.setText(foodItem.getType());
+            vegetarian.setChecked(foodItem.getVegetarian());
             description.setText(foodItem.getDescription());
 
             foodImage.setTag(foodItem.getImageUrl());
@@ -140,13 +133,13 @@ public class FoodEditFragment extends Fragment {
         foodImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showImageSelectionMenu();
+                dispatchTakePictureIntent();
             }
         });
         saveBtn.setOnClickListener(new View.OnClickListener() {
                                        @Override
                                        public void onClick(View v) {
-                                           saveFoodItem();
+                                           saveFoodItem(foodIdString);
                                        }
                                    }
         );
@@ -165,25 +158,6 @@ public class FoodEditFragment extends Fragment {
             }
         });
         return contentView;
-    }
-
-    protected void showImageSelectionMenu() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle(R.string.img_dialog_title)
-                .setItems(R.array.images_menu,
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                switch (which){
-                                    case 0: // camera
-                                        dispatchTakePictureIntent();
-                                        break;
-                                    case 1: // gallery
-                                        break;
-                                }
-                            }
-                        });
-        AlertDialog alertDialog = builder.create();
-        alertDialog.show();
     }
 
     protected void dispatchTakePictureIntent() {
@@ -208,22 +182,26 @@ public class FoodEditFragment extends Fragment {
         backToList();
     }
 
-    public void saveFoodItem(){
-        String idNew = ((EditText)getView().findViewById(R.id.edit_id)).getText().toString();
+    public void saveFoodItem(String fid){
+        String fidNew = fid;
         String nameNew = ((EditText) getView().findViewById(R.id.edit_name)).getText().toString();
         String typeNew = ((EditText)getView().findViewById(R.id.edit_type)).getText().toString();
         String descriptionNew = ((EditText)getView().findViewById(R.id.edit_description)).getText().toString();
-        String priceNew = ((EditText)getView().findViewById(R.id.edit_price)).getText().toString();
-        Boolean discountNew = ((CheckBox)getView().findViewById(R.id.edit_discount)).isChecked();
+        Boolean vegetarianNew = ((CheckBox)getView().findViewById(R.id.edit_vegetarian)).isChecked();
+
+        if(!validateFoodItemFields(nameNew, typeNew, descriptionNew, vegetarianNew)) {
+            return;
+        }
+
         progressBar.setVisibility(View.VISIBLE);
-        final FoodItem foodItem = new FoodItem(idNew, nameNew, typeNew, descriptionNew, Integer.parseInt(priceNew), discountNew);
+        final FoodItem foodItemNew = new FoodItem(fidNew, nameNew, typeNew, descriptionNew, vegetarianNew, foodItem.getImageUrl(), foodItem.getUserId());
 
         if (imageBitmap != null) {
-            FoodItemModel.instance.saveImage(imageBitmap, foodItem.getId() + ".jpeg", new FoodItemModel.SaveImageListener() {
+            FoodItemModel.instance.saveImage(imageBitmap, foodItemNew.getFid() + ".jpeg", new FoodItemModel.SaveImageListener() {
                 @Override
                 public void complete(String url) {
-                    foodItem.setImageUrl(url);
-                    FoodItemModel.instance.updateFoodItem(foodItem);
+                    foodItemNew.setImageUrl(url);
+                    FoodItemModel.instance.updateFoodItem(foodItemNew);
                     progressBar.setVisibility(GONE);
                     showMessage("Edit Food Details", "Food updated successfully");
                     backToList();
@@ -236,7 +214,7 @@ public class FoodEditFragment extends Fragment {
                 }
             });
         }else{
-            FoodItemModel.instance.updateFoodItem(foodItem);
+            FoodItemModel.instance.updateFoodItem(foodItemNew);
             progressBar.setVisibility(GONE);
             showMessage("Edit Food Details", "Food updated successfully");
             backToList();
@@ -258,7 +236,33 @@ public class FoodEditFragment extends Fragment {
     }
 
     protected void backToList(){
-        getFragmentManager().popBackStack();
+        getFragmentManager().popBackStack(0,  FragmentManager.POP_BACK_STACK_INCLUSIVE);
+    }
+
+    protected boolean validateFoodItemFields(String name,String type, String description, boolean vegeratian ) {
+        boolean isValid = true;
+        String errorMsg = "";
+
+        if(TextUtils.isEmpty(name)) {
+            isValid = false;
+            errorMsg += "Name can not be empty.\n";
+        }
+
+        if(TextUtils.isEmpty(type)) {
+            isValid = false;
+            errorMsg += "Type can not be empty.\n";
+        }
+
+        if(TextUtils.isEmpty(description)) {
+            isValid = false;
+            errorMsg += "Description can not be empty.\n";
+        }
+
+        if(!isValid) {
+            showMessage("Invalid input", errorMsg);
+        }
+
+        return isValid;
     }
 
 }

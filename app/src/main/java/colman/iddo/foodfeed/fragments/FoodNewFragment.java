@@ -1,6 +1,7 @@
 package colman.iddo.foodfeed.fragments;
 
 import android.app.AlertDialog;
+import android.app.Fragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -15,8 +16,12 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
+
+import java.util.UUID;
 
 import colman.iddo.foodfeed.R;
+import colman.iddo.foodfeed.model.AuthFirebase;
 import colman.iddo.foodfeed.model.FoodItem;
 import colman.iddo.foodfeed.model.FoodItemModel;
 
@@ -50,12 +55,10 @@ public class FoodNewFragment extends FoodEditFragment {
         // Inflate the layout for this fragment
         View contentView = inflater.inflate(R.layout.fragment_food_data, container, false);
 
-        id = (EditText) contentView.findViewById(R.id.edit_id);
         foodName = (EditText) contentView.findViewById(R.id.edit_name);
         foodImage = (ImageView) contentView.findViewById(R.id.edit_image);
         foodType = (EditText) contentView.findViewById(R.id.edit_type);
-        discount = (CheckBox) contentView.findViewById(R.id.edit_discount);
-        price = (EditText) contentView.findViewById(R.id.edit_price);
+        vegetarian = (CheckBox) contentView.findViewById(R.id.edit_vegetarian);
         description = (EditText) contentView.findViewById(R.id.edit_description);
 
         Button saveBtn = (Button) contentView.findViewById(R.id.edit_btn_save);
@@ -70,21 +73,15 @@ public class FoodNewFragment extends FoodEditFragment {
         foodImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                showImageSelectionMenu();
+                dispatchTakePictureIntent();
             }
         });
 
         saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String foodId = ((EditText)getView().findViewById(R.id.edit_id)).getText().toString();
-                if(FoodItemModel.instance.checkIfIdAlreadyExists(foodId))
-                    showMessage("Add New Student", "Id Already Exist");
-                else
                     createFoodItem();
                 }
-
         });
 
         cancelBtn.setOnClickListener(new View.OnClickListener() {
@@ -98,41 +95,49 @@ public class FoodNewFragment extends FoodEditFragment {
     }
 
     private void createFoodItem(){
-        String idNew = ((EditText)getView().findViewById(R.id.edit_id)).getText().toString();
         String nameNew = ((EditText) getView().findViewById(R.id.edit_name)).getText().toString();
         String typeNew = ((EditText)getView().findViewById(R.id.edit_type)).getText().toString();
         String descriptionNew = ((EditText)getView().findViewById(R.id.edit_description)).getText().toString();
-        String priceNew = ((EditText)getView().findViewById(R.id.edit_price)).getText().toString();
-        Boolean discountNew = ((CheckBox)getView().findViewById(R.id.edit_discount)).isChecked();
+        Boolean vegetarian = ((CheckBox)getView().findViewById(R.id.edit_vegetarian)).isChecked();
+
+        if(!validateFoodItemFields(nameNew, typeNew, descriptionNew, vegetarian)) {
+            return;
+        }
+
+        String fidNew = UUID.randomUUID().toString();
+        Log.d("TAG", "New fid: " + fidNew);
+
+        String userId = AuthFirebase.instance.getCurrentFirebaseUserId();
 
         progressBar.setVisibility(View.VISIBLE);
-        final FoodItem foodItem = new FoodItem(idNew, nameNew, typeNew, descriptionNew, Integer.parseInt(priceNew), discountNew);
+        final FoodItem foodItem = new FoodItem(fidNew, nameNew, typeNew, descriptionNew, vegetarian, null, userId);
 
         if (imageBitmap != null) {
-            FoodItemModel.instance.saveImage(imageBitmap, foodItem.getId() + ".jpeg", new FoodItemModel.SaveImageListener() {
+            FoodItemModel.instance.saveImage(imageBitmap, foodItem.getFid() + ".jpeg", new FoodItemModel.SaveImageListener() {
                 @Override
                 public void complete(String url) {
                     foodItem.setImageUrl(url);
                     FoodItemModel.instance.addFoodItem(foodItem);
                     progressBar.setVisibility(GONE);
-                    showMessage("Add New Student", "New student added successfully");
+                    showMessage("Add New Food", "New food added successfully");
                     backToList();
                 }
 
                 @Override
                 public void fail() {
                     progressBar.setVisibility(GONE);
-                    showMessage("Add New Student", "Failed adding new student");
+                    showMessage("Add New Food", "Failed adding new food");
                 }
             });
         }else{
             FoodItemModel.instance.addFoodItem(foodItem);
             progressBar.setVisibility(GONE);
-            showMessage("Add New Student", "New student added successfully");
+            showMessage("Add New Food", "New food added successfully");
             backToList();
         }
     }
 
-
-
+    protected void backToList(){
+        getFragmentManager().popBackStack();
+    }
 }

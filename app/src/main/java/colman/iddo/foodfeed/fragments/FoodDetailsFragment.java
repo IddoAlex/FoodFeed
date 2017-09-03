@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -19,46 +18,42 @@ import colman.iddo.foodfeed.model.FoodItemModel;
 
 public class FoodDetailsFragment extends Fragment {
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     */
-    public interface DetailsFragmentListener {
-        /**
-         * updateStudentId intended to update the foodId string in the Activity when resuming
-         * to this fragment after editing, to make sure the Edit button in the ActionBar will
-         * have the updated ID string.
-         * @param studentId
-         */
-        void updateStudentId(String studentId);
+    // Listenerto update the current FoodId string in the main activity.
+    public interface FoodIdUpdateListener {
+        void updateFoodIdInActivity(String foodId);
     }
 
     // the fragment initialization parameters
-    private static final String FOOD_ID = "FOOD_ID";
+    private static final String FOOD_ID = "fid";
 
     // fragment's main variables
+    protected FoodIdUpdateListener foodIdUpdateListener;
     protected FoodItem foodItem;
     protected String foodId;
-    protected TextView id;
     protected TextView foodName;
     protected ImageView foodImage;
     protected TextView foodType;
-    protected ImageView discount;
-    protected TextView price;
+    protected ImageView vegetarian;
     protected TextView description;
-
-    private DetailsFragmentListener detailsFragmentListener;
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
-        menu.findItem(R.id.addFoodItemBtn).setVisible(false).setEnabled(false);
-        menu.findItem(R.id.editFoodItemBtn).setVisible(true).setEnabled(true);
+        menu.findItem(R.id.menu_add_food).setVisible(false).setEnabled(false);
+        menu.findItem(R.id.menu_edit_food).setVisible(true).setEnabled(true);
     }
 
     public FoodDetailsFragment() {
         // Required empty public constructor
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof FoodIdUpdateListener)
+            foodIdUpdateListener = (FoodIdUpdateListener) context;
+        else {
+            throw new RuntimeException(context.toString() + " must implement foodIdUpdateListener");
+        }
     }
 
     /**
@@ -67,6 +62,7 @@ public class FoodDetailsFragment extends Fragment {
      */
     public static FoodDetailsFragment newInstance(String foodId) {
         FoodDetailsFragment fragment = new FoodDetailsFragment();
+
         Bundle args = new Bundle();
         args.putString(FOOD_ID, foodId);
         fragment.setArguments(args);
@@ -89,7 +85,7 @@ public class FoodDetailsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Log.d("DETAILS", "FoodDetailsFragment onCreateView");
-        Log.d("DETAILS", "Passed foodItem id = " + foodItem.getId());
+        Log.d("DETAILS", "Passed foodItem id = " + foodItem.getFid());
 
         // Inflate the layout for this fragment
         View contentView = inflater.inflate(R.layout.fragment_food_details, container, false);
@@ -99,25 +95,21 @@ public class FoodDetailsFragment extends Fragment {
 
         if (myBundle != null){
             foodId = myBundle.getString(FOOD_ID);
-
+            foodIdUpdateListener.updateFoodIdInActivity(foodId);
             foodItem = FoodItemModel.instance.getFoodItem(foodId);
 
             foodName = (TextView) contentView.findViewById(R.id.details_food_name);
-            id = (TextView) contentView.findViewById(R.id.details_food_id);
-            foodType = contentView.findViewById(R.id.details_food_type);
-            discount = (ImageView) contentView.findViewById(R.id.details_food_discount);
-            price = (TextView) contentView.findViewById(R.id.details_food_price);
+            foodType = (TextView) contentView.findViewById(R.id.details_food_type);
+            vegetarian = (ImageView) contentView.findViewById(R.id.details_food_vegetarian);
             description = (TextView) contentView.findViewById(R.id.details_food_description);
             foodImage = (ImageView) contentView.findViewById(R.id.details_food_image);
 
-            id.setText(foodItem.getId());
-            foodName.setText(foodItem.getFoodName());
-            foodType.setText(foodItem.getFoodType());
-            if (foodItem.getDiscount())
-                discount.setVisibility(View.VISIBLE);
+            foodName.setText(foodItem.getName());
+            foodType.setText(foodItem.getType());
+            if (foodItem.getVegetarian())
+                vegetarian.setVisibility(View.VISIBLE);
             else
-                discount.setVisibility(View.INVISIBLE);
-            price.setText(foodItem.getPrice());
+                vegetarian.setVisibility(View.INVISIBLE);
             description.setText(foodItem.getDescription());
 
             foodImage.setTag(foodItem.getImageUrl());
@@ -135,7 +127,6 @@ public class FoodDetailsFragment extends Fragment {
 
                     @Override
                     public void onFail() {
-
                     }
                 });
             }
@@ -145,38 +136,11 @@ public class FoodDetailsFragment extends Fragment {
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof DetailsFragmentListener) {
-            detailsFragmentListener = (DetailsFragmentListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement DetailsFragmentListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        detailsFragmentListener = null;
-    }
-
-    @Override
-    public void onPause() {
-        Log.d("DETAILS", "onPause");
-        super.onPause();
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
         foodItem = FoodItemModel.instance.getFoodItem(foodId);
         if (foodItem != null){
-            //name.setText(foodItem.getName());
-            id.setText(foodItem.getId());
             description.setText(foodItem.getDescription());
-            detailsFragmentListener.updateStudentId(foodId);
-            Log.d("DETAILS", "foodId now = " + foodId);
         }
         Log.d("DETAILS", "onResume");
 

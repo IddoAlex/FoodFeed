@@ -27,7 +27,7 @@ public class ModelSql extends SQLiteOpenHelper {
          * @param version The DB's version. We must increment the DB number each time it is
          *                changed, otherwise the DB scheme won't be changed.
          */
-        super(context, "database.db", null, 8);
+        super(context, "database.db", null, 17);
     }
 
     @Override

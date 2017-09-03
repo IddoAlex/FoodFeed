@@ -14,7 +14,7 @@
             android:id="@+id/edit_image"
             android:layout_width="match_parent"
             android:layout_height="200dp"
-            android:src="@drawable/dish" />
+            android:src="@drawable/avatar" />
 
         <ProgressBar
             android:id="@+id/edit_progressbar"
@@ -37,37 +37,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="5dp"
-            android:text="@string/id"
-            android:textSize="15dp"
-            android:textStyle="bold" />
-
-        <EditText
-            android:id="@+id/edit_id"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="5dp"
-            android:inputType="phone"
-            android:digits="1234567890"
-            android:layout_weight="1"
-            android:text=""
-            android:textSize="15dp" />
-    </LinearLayout>
-
-    <!-- Name -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="5dp"
-            android:text="@string/foodName"
+            android:text="@string/name"
             android:textSize="15dp"
             android:textStyle="bold" />
 
@@ -95,7 +65,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="5dp"
-            android:text="@string/foodType"
+            android:text="@string/type"
             android:textSize="15dp"
             android:textStyle="bold" />
 
@@ -110,68 +80,13 @@
             android:textSize="15dp" />
     </LinearLayout>
 
-    <!-- Price -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="5dp"
-            android:text="@string/foodPrice"
-            android:textSize="15dp"
-            android:textStyle="bold" />
-
-        <EditText
-            android:id="@+id/edit_price"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="5dp"
-            android:layout_weight="1"
-            android:inputType="phone"
-            android:digits="1234567890"
-            android:text=""
-            android:textSize="15dp" />
-    </LinearLayout>
-
-    <!-- Price -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:orientation="horizontal">
-
-        <CheckBox
-            android:id="@+id/edit_discount"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="10dp"
-            android:focusable="false" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:textStyle="bold"
-            android:text="@string/foodDiscount"
-            android:textSize="15dp" />
-    </LinearLayout>
-
     <!-- Description -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:orientation="horizontal"
-        android:layout_weight="0.90">
+        android:orientation="horizontal" >
 
         <TextView
             android:layout_width="wrap_content"
@@ -190,6 +105,30 @@
             android:text=""
             android:textSize="15dp"
             android:inputType="textMultiLine"/>
+    </LinearLayout>
+
+    <!-- Vegetarian -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:orientation="horizontal">
+
+        <CheckBox
+            android:id="@+id/edit_vegetarian"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:focusable="false" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:text="@string/foodDiscount"
+            android:textSize="15dp" />
     </LinearLayout>
 
     <!-- Buttons -->

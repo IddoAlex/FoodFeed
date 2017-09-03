@@ -42,40 +42,36 @@ public class FoodFirebase {
     private final String TAG = "FoodFirebase";
 
     static final String FOOD_TABLE = "foodItems";
-    static final String FOOD_ID = "foodId";
-<<<<<<< HEAD
-    static final String NAME = "foodName";
-    static final String TYPE = "foodType";
+    static final String FOOD_ID = "fid";
+    static final String NAME = "name";
+    static final String TYPE = "type";
     static final String DESCRIPTION = "description";
-    static final String PRICE = "price";
-    static final String DISCOUNT = "discount";
-    static final String IMAGE_URL = "imageURL";
+    static final String VEGETARIAN = "vegetarian";
+    static final String IMAGE_URL = "imageUrl";
     static final String USER_ID = "userId";
-    static final String FOOD_LAST_UPDATE_DATE = "lasUpdateDate";
-
+    static final String FOOD_LAST_UPDATE_DATE = "lastUpdateDate";
 
     public void addOrUpdateFoodItem(FoodItem foodItem) {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference(FOOD_TABLE);
 
         Map<String, Object> value = new HashMap<>();
-        value.put(FOOD_ID, foodItem.getId());
-        value.put(NAME, foodItem.getFoodName());
-        value.put(TYPE, foodItem.getFoodType());
+        value.put(FOOD_ID, foodItem.getFid());
+        value.put(NAME, foodItem.getName());
+        value.put(TYPE, foodItem.getType());
         value.put(DESCRIPTION, foodItem.getDescription());
-        value.put(PRICE, foodItem.getPrice());
-        value.put(DISCOUNT, foodItem.getDiscount());
+        value.put(VEGETARIAN, foodItem.getVegetarian());
         value.put(IMAGE_URL, foodItem.getImageUrl());
         value.put(USER_ID, foodItem.getUserId());
         value.put(FOOD_LAST_UPDATE_DATE, ServerValue.TIMESTAMP);
 
-        myRef.child(foodItem.getId()).setValue(value);
+        myRef.child(foodItem.getFid()).setValue(value);
     }
 
-    public void getFoodItem(String foodId, final GetFoodItemCallback callback) {
+    public void getFoodItem(String id, final GetFoodItemCallback callback) {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference(FOOD_TABLE);
-        myRef.child(foodId).addListenerForSingleValueEvent(new ValueEventListener() {
+        myRef.child(id).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 FoodItem food = dataSnapshot.getValue(FoodItem.class);
@@ -89,10 +85,10 @@ public class FoodFirebase {
         });
     }
 
-    public void deleteFoodItem(String foodId) {
+    public void deleteFoodItem(String id) {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference(FOOD_TABLE);
-        myRef.child(foodId).removeValue();
+        myRef.child(id).removeValue();
     }
 
     public void getAllFoodItemsAndObserve(double lastUpdateDate,

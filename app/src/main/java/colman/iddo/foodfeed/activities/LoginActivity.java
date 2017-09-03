@@ -1,7 +1,6 @@
 package colman.iddo.foodfeed.activities;
 
 import android.content.Intent;
-import android.support.annotation.NonNull;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -10,11 +9,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 import colman.iddo.foodfeed.R;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseUser;
+import colman.iddo.foodfeed.model.AuthFirebase;
 
 public class LoginActivity extends  BaseActivity implements
         View.OnClickListener {
@@ -53,8 +48,8 @@ public class LoginActivity extends  BaseActivity implements
     public void onStart() {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser currentUser = getFirebaseAuth().getCurrentUser();
-        if(currentUser != null) {
+
+        if(AuthFirebase.instance.getIsLoggedOn()) {
             onLoginSuccess();
         }
     }
@@ -74,27 +69,22 @@ public class LoginActivity extends  BaseActivity implements
         showProgressDialog();
 
         // [START sign_in_with_email]
-        getFirebaseAuth().signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "signInWithEmail:success");
-
-                            onLoginSuccess();
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Log.w(TAG, "signInWithEmail:failure", task.getException());
-                            Toast.makeText(LoginActivity.this, "Authentication failed.",
-                                    Toast.LENGTH_LONG).show();
-                            //updateUI(null);
-                        }
-
-                        hideProgressDialog();
-                    }
-                });
-        // [END sign_in_with_email]
+        AuthFirebase.instance.signUserIn(this, email, password, new Runnable() {
+            @Override
+            public void run() {
+                Log.d(TAG, "signInWithEmail:success");
+                hideProgressDialog();
+                onLoginSuccess();
+            }
+        }, new Runnable() {
+            @Override
+            public void run() {
+                // If sign in fails, display a message to the user.
+                hideProgressDialog();
+                Toast.makeText(LoginActivity.this, "Failed to log in",
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void createAccount(String email, String password) {
@@ -106,29 +96,23 @@ public class LoginActivity extends  BaseActivity implements
         showProgressDialog();
 
         // [START create_user_with_email]
-        getFirebaseAuth().createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "createUserWithEmail:success");
-
-                            onLoginSuccess();
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                            Toast.makeText(LoginActivity.this, task.getException().getMessage(),
-                                    Toast.LENGTH_SHORT).show();
-                            //updateUI(null);
-                        }
-
-                        // [START_EXCLUDE]
-                        hideProgressDialog();
-                        // [END_EXCLUDE]
-                    }
-                });
-        // [END create_user_with_email]
+        AuthFirebase.instance.registerUser(this, email, password, new Runnable() {
+            @Override
+            public void run() {
+                // Sign in success, update UI with the signed-in user's information
+                Log.d(TAG, "createUserWithEmail:success");
+                hideProgressDialog();
+                onLoginSuccess();
+            }
+        }, new Runnable() {
+            @Override
+            public void run() {
+                // If sign in fails, display a message to the user.
+                hideProgressDialog();
+                Toast.makeText(LoginActivity.this, "Failed to register",
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void onLoginSuccess() {

@@ -13,7 +13,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -32,40 +31,73 @@ import colman.iddo.foodfeed.model.FoodItem;
 
 public class FoodItemsListFragment extends Fragment {
 
+    /**
+     * This interface must be implemented by activities that contain this
+     * fragment to allow an interaction in this fragment to be communicated
+     * to the activity and potentially other fragments contained in that
+     * activity.
+     */
+    public interface ListFragmentListener {
+        void onFoodItemSelected(String fid);
+    }
+
     static final int REQUEST_ADD_ID = 1;
     static final int REQUEST_WRITE_STORAGE = 2;
-    private static final String FOOD_ID = "FOOD_ID";
 
     ListView list;
-    private List<FoodItem> data = new LinkedList<>();
+    List<FoodItem> data = new LinkedList<>();
     FoodItemsAdapter adapter;
+    ListFragmentListener listFragmentListener;
 
     public FoodItemsListFragment() {
         // Required empty public constructor
     }
 
     @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof ListFragmentListener)
+            listFragmentListener = (ListFragmentListener) context;
+        else {
+            throw new RuntimeException(context.toString() + " must implement listFragmentListener");
+        }
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        menu.findItem(R.id.menu_edit_food).setVisible(false).setEnabled(false);
+        menu.findItem(R.id.menu_add_food).setVisible(true).setEnabled(true);
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        listFragmentListener = null;
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        setHasOptionsMenu(true);
-        getActivity().invalidateOptionsMenu();
 
         // Inflate the layout for this fragment
         View contentView = inflater.inflate(R.layout.fragment_food_list, container, false);
 
+        // Initiate data and view
         list = (ListView) contentView.findViewById(R.id.foodItemsList);
-        adapter = new FoodItemsAdapter(getActivity());
-
+        adapter = new FoodItemsAdapter();
         list.setAdapter(adapter);
+
+        // Select food item
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                FoodDetailsFragment studentDetailsFragment = new FoodDetailsFragment();
-                Bundle myBundle = new Bundle();
-                myBundle.putString(FOOD_ID, data.get(position).getId());
-                studentDetailsFragment.setArguments(myBundle);
-                getFragmentManager().beginTransaction()
-                        .replace(((ViewGroup) getView().getParent()).getId(), studentDetailsFragment).addToBackStack(null).commit();
+                listFragmentListener.onFoodItemSelected(data.get(position).getFid());
             }
         });
 
@@ -99,23 +131,9 @@ public class FoodItemsListFragment extends Fragment {
         return contentView;
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        Log.d("CHECK", "FoodItemsListFragment: onActivityResult");
-
-        if (requestCode == REQUEST_ADD_ID){
-            if (resultCode == FoodNewFragment.RESULT_SUCCESS){
-                //operation success
-                Log.d("TAG","operation success");
-            }else{
-                Log.d("TAG","operation fail");
-            }
-        }else{
-            if (resultCode == REQUEST_WRITE_STORAGE){
-                Log.d("TAG", "REQUEST_WRITE_STORAGE");
-            }
-        }
+    public static FoodItemsListFragment newInstance() {
+        FoodItemsListFragment fragment = new FoodItemsListFragment();
+        return fragment;
     }
 
     @Override
@@ -135,11 +153,7 @@ public class FoodItemsListFragment extends Fragment {
 
     class FoodItemsAdapter extends BaseAdapter {
 
-        private Context context;
-
-        public FoodItemsAdapter(Context context){
-            this.context = context;
-        }
+        LayoutInflater inflater = getActivity().getLayoutInflater();
 
         @Override
         public int getCount() {
@@ -158,29 +172,24 @@ public class FoodItemsListFragment extends Fragment {
 
         @Override
         public View getView(final int position, View convertView, ViewGroup parent) {
-            if (convertView == null){
-                LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            if (convertView == null)
                 convertView = inflater.inflate(R.layout.food_items_row, null);
-            }
 
-            final TextView foodName = (TextView)convertView.findViewById(R.id.row_food_name);
-            final TextView foodId = (TextView)convertView.findViewById(R.id.row_food_id);
-            final ImageView discount = (ImageView)convertView.findViewById(R.id.row_food_discount);
+            TextView foodName = (TextView)convertView.findViewById(R.id.row_food_name);
+            ImageView vegetarian = (ImageView)convertView.findViewById(R.id.row_food_vegetarian);
             final ImageView imageView = (ImageView) convertView.findViewById(R.id.row_food_image);
             final ProgressBar progressBar = (ProgressBar) convertView.findViewById(R.id.row_food_progressbar);
-            final TextView foodType = (TextView) convertView.findViewById(R.id.row_food_type);
-            final TextView price = (TextView) convertView.findViewById(R.id.row_food_price);
-            final TextView description = (TextView) convertView.findViewById(R.id.row_food_description);
+            TextView foodType = (TextView) convertView.findViewById(R.id.row_food_type);
+            TextView description = (TextView) convertView.findViewById(R.id.row_food_description);
 
             final FoodItem foodItem = data.get(position);
-            foodName.setText(foodItem.getFoodName());
-            foodId.setText(foodItem.getId());
-            if (foodItem.getDiscount())
-                discount.setVisibility(View.VISIBLE);
+
+            foodName.setText(foodItem.getName());
+            if (foodItem.getVegetarian())
+                vegetarian.setVisibility(View.VISIBLE);
             else
-                discount.setVisibility(View.INVISIBLE);
-            foodType.setText(foodItem.getFoodType());
-            price.setText(foodItem.getPrice());
+                vegetarian.setVisibility(View.INVISIBLE);
+            foodType.setText(foodItem.getType());
             description.setText(foodItem.getDescription());
 
             imageView.setTag(foodItem.getImageUrl());
@@ -204,7 +213,6 @@ public class FoodItemsListFragment extends Fragment {
                     }
                 });
             }
-
             return convertView;
         }
     }

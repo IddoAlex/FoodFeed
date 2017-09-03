@@ -73,7 +73,6 @@ public class FoodItemModel {
                 prefEd.commit();
                 Log.d(TAG,LastFoodItemsUpdateDateString + " " + newLastUpdateDate);
 
-
                 //5. read from local db
                 List<FoodItem> data = FoodSql.getAllFoodItems(modelSql.getReadableDatabase());
 
@@ -82,23 +81,24 @@ public class FoodItemModel {
             }
             @Override
             public void onCancel() {
-
             }
         });
     }
 
-    public FoodItem getFoodItem(String fId){
-        return FoodSql.getFoodItem(modelSql.getReadableDatabase(), fId);
+    public FoodItem getFoodItem(String fid){
+        return FoodSql.getFoodItem(modelSql.getReadableDatabase(), fid);
     }
 
     public void addFoodItem(FoodItem foodItem) {
+        foodItem.setUserId(AuthFirebase.instance.getCurrentFirebaseUserId());
+
         // Because observing addition to Firebase, foodItem will be added to local SQL db too
         foodFirebase.addOrUpdateFoodItem(foodItem);
     }
 
-    public void deleteFoodItem(String foodId){
-        FoodSql.deleteFoodItem(modelSql.getWritableDatabase(), foodId);
-        foodFirebase.deleteFoodItem(foodId);
+    public void deleteFoodItem(String fid){
+        FoodSql.deleteFoodItem(modelSql.getWritableDatabase(), fid);
+        foodFirebase.deleteFoodItem(fid);
     }
 
     public void updateFoodItem(FoodItem foodItem) {
@@ -106,13 +106,7 @@ public class FoodItemModel {
         FoodSql.updateFoodItem(modelSql.getWritableDatabase(), foodItem);
     }
 
-    public boolean checkIfIdAlreadyExists(String foodId){
-        return FoodSql.checkIfIdAlreadyExists(modelSql.getReadableDatabase(), foodId);
-    }
-
-    /*
-        IMAGES
-         */
+    // IMAGES
     public void saveImage(final Bitmap imageBmp, final String name, final SaveImageListener listener) {
         foodFirebase.saveImage(imageBmp, name, new SaveImageListener() {
             @Override
