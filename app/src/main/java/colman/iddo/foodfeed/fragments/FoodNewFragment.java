@@ -28,23 +28,7 @@ import colman.iddo.foodfeed.model.FoodItemModel;
 import static android.app.Activity.RESULT_OK;
 import static android.view.View.GONE;
 
-public class FoodNewFragment extends Fragment {
-
-    public static final int REQUEST_IMAGE_CAPTURE = 1;
-    public final static int RESULT_SUCCESS = 0;
-    public final static int RESULT_FAIL = 1;
-
-    protected FoodItem foodItem;
-    protected ProgressBar progressBar;
-
-    protected TextView foodName;
-    protected ImageView foodImage;
-    protected TextView foodType;
-    protected CheckBox vegetarian;
-    protected TextView description;
-
-    protected Bitmap imageBitmap;
-    protected String foodIdString;
+public class FoodNewFragment extends FoodEditFragment {
 
     public FoodNewFragment() {
         // Required empty public constructor
@@ -111,12 +95,18 @@ public class FoodNewFragment extends Fragment {
     }
 
     private void createFoodItem(){
-        String fidNew = UUID.randomUUID().toString();
-        Log.d("TAG", "New fid: " + fidNew);
         String nameNew = ((EditText) getView().findViewById(R.id.edit_name)).getText().toString();
         String typeNew = ((EditText)getView().findViewById(R.id.edit_type)).getText().toString();
         String descriptionNew = ((EditText)getView().findViewById(R.id.edit_description)).getText().toString();
         Boolean vegetarian = ((CheckBox)getView().findViewById(R.id.edit_vegetarian)).isChecked();
+
+        if(!validateFoodItemFields(nameNew, typeNew, descriptionNew, vegetarian)) {
+            return;
+        }
+
+        String fidNew = UUID.randomUUID().toString();
+        Log.d("TAG", "New fid: " + fidNew);
+
         String userId = AuthFirebase.instance.getCurrentFirebaseUserId();
 
         progressBar.setVisibility(View.VISIBLE);
@@ -149,36 +139,5 @@ public class FoodNewFragment extends Fragment {
 
     protected void backToList(){
         getFragmentManager().popBackStack();
-    }
-
-
-    protected void dispatchTakePictureIntent() {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
-            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-        }
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            Bundle extras = data.getExtras();
-            imageBitmap = (Bitmap) extras.get("data");
-            foodImage.setImageBitmap(imageBitmap);
-        }
-    }
-
-    protected void showMessage(String title, String message) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-
-        builder.setTitle(title);
-        builder.setMessage(message);
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Log.d("TAG", "OK");
-            }
-        });
-        builder.show();
     }
 }

@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -187,6 +188,11 @@ public class FoodEditFragment extends Fragment {
         String typeNew = ((EditText)getView().findViewById(R.id.edit_type)).getText().toString();
         String descriptionNew = ((EditText)getView().findViewById(R.id.edit_description)).getText().toString();
         Boolean vegetarianNew = ((CheckBox)getView().findViewById(R.id.edit_vegetarian)).isChecked();
+
+        if(!validateFoodItemFields(nameNew, typeNew, descriptionNew, vegetarianNew)) {
+            return;
+        }
+
         progressBar.setVisibility(View.VISIBLE);
         final FoodItem foodItemNew = new FoodItem(fidNew, nameNew, typeNew, descriptionNew, vegetarianNew, foodItem.getImageUrl(), foodItem.getUserId());
 
@@ -231,6 +237,32 @@ public class FoodEditFragment extends Fragment {
 
     protected void backToList(){
         getFragmentManager().popBackStack(0,  FragmentManager.POP_BACK_STACK_INCLUSIVE);
+    }
+
+    protected boolean validateFoodItemFields(String name,String type, String description, boolean vegeratian ) {
+        boolean isValid = true;
+        String errorMsg = "";
+
+        if(TextUtils.isEmpty(name)) {
+            isValid = false;
+            errorMsg += "Name can not be empty.\n";
+        }
+
+        if(TextUtils.isEmpty(type)) {
+            isValid = false;
+            errorMsg += "Type can not be empty.\n";
+        }
+
+        if(TextUtils.isEmpty(description)) {
+            isValid = false;
+            errorMsg += "Description can not be empty.\n";
+        }
+
+        if(!isValid) {
+            showMessage("Invalid input", errorMsg);
+        }
+
+        return isValid;
     }
 
 }
