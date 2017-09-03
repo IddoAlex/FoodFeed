@@ -73,7 +73,6 @@ public class FoodItemModel {
                 prefEd.commit();
                 Log.d(TAG,LastFoodItemsUpdateDateString + " " + newLastUpdateDate);
 
-
                 //5. read from local db
                 List<FoodItem> data = FoodSql.getAllFoodItems(modelSql.getReadableDatabase());
 
@@ -82,13 +81,12 @@ public class FoodItemModel {
             }
             @Override
             public void onCancel() {
-
             }
         });
     }
 
-    public FoodItem getFoodItem(String fId){
-        return FoodSql.getFoodItem(modelSql.getReadableDatabase(), fId);
+    public FoodItem getFoodItem(String fid){
+        return FoodSql.getFoodItem(modelSql.getReadableDatabase(), fid);
     }
 
     public void addFoodItem(FoodItem foodItem) {
@@ -98,9 +96,9 @@ public class FoodItemModel {
         foodFirebase.addOrUpdateFoodItem(foodItem);
     }
 
-    public void deleteFoodItem(String foodId){
-        FoodSql.deleteFoodItem(modelSql.getWritableDatabase(), foodId);
-        foodFirebase.deleteFoodItem(foodId);
+    public void deleteFoodItem(String fid){
+        FoodSql.deleteFoodItem(modelSql.getWritableDatabase(), fid);
+        foodFirebase.deleteFoodItem(fid);
     }
 
     public void updateFoodItem(FoodItem foodItem) {

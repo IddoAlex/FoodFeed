@@ -14,6 +14,7 @@ import android.widget.ProgressBar;
 import java.util.UUID;
 
 import colman.iddo.foodfeed.R;
+import colman.iddo.foodfeed.model.AuthFirebase;
 import colman.iddo.foodfeed.model.FoodItem;
 import colman.iddo.foodfeed.model.FoodItemModel;
 
@@ -87,18 +88,19 @@ public class FoodNewFragment extends FoodEditFragment {
     }
 
     private void createFoodItem(){
-        String idNew = UUID.randomUUID().toString();
+        String fidNew = UUID.randomUUID().toString();
+        Log.d("TAG", "New fid: " + fidNew);
         String nameNew = ((EditText) getView().findViewById(R.id.edit_name)).getText().toString();
         String typeNew = ((EditText)getView().findViewById(R.id.edit_type)).getText().toString();
         String descriptionNew = ((EditText)getView().findViewById(R.id.edit_description)).getText().toString();
         Boolean vegetarian = ((CheckBox)getView().findViewById(R.id.edit_vegetarian)).isChecked();
+        String userId = AuthFirebase.instance.getCurrentFirebaseUserId();
 
         progressBar.setVisibility(View.VISIBLE);
-        final FoodItem foodItem = new FoodItem(idNew, nameNew, typeNew, descriptionNew, vegetarian, null, null, 0);
-        //TODO Change userId null to the user's emailaddress
+        final FoodItem foodItem = new FoodItem(fidNew, nameNew, typeNew, descriptionNew, vegetarian, null, userId);
 
         if (imageBitmap != null) {
-            FoodItemModel.instance.saveImage(imageBitmap, foodItem.getId() + ".jpeg", new FoodItemModel.SaveImageListener() {
+            FoodItemModel.instance.saveImage(imageBitmap, foodItem.getFid() + ".jpeg", new FoodItemModel.SaveImageListener() {
                 @Override
                 public void complete(String url) {
                     foodItem.setImageUrl(url);

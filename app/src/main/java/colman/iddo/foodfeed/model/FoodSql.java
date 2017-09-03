@@ -4,7 +4,6 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -15,7 +14,7 @@ import java.util.List;
 
 public class FoodSql {
     static final String FOOD_TABLE = "foodItems";
-    static final String FOOD_ID = "foodId";
+    static final String FOOD_ID = "fid";
     static final String NAME = "name";
     static final String TYPE = "type";
     static final String DESCRIPTION = "description";
@@ -44,7 +43,7 @@ public class FoodSql {
 
     static void addFoodItem(SQLiteDatabase db, FoodItem foodItem) {
         ContentValues values = new ContentValues();
-        values.put(FOOD_ID, foodItem.getId());
+        values.put(FOOD_ID, foodItem.getFid());
         values.put(NAME, foodItem.getName());
         values.put(TYPE, foodItem.getType());
         values.put(DESCRIPTION, foodItem.getDescription());
@@ -57,14 +56,14 @@ public class FoodSql {
 
     static void updateFoodItem(SQLiteDatabase db, FoodItem foodItem){
         ContentValues values = new ContentValues();
-        values.put(FOOD_ID, foodItem.getId());
+        values.put(FOOD_ID, foodItem.getFid());
         values.put(NAME, foodItem.getName());
         values.put(TYPE, foodItem.getType());
         values.put(DESCRIPTION, foodItem.getDescription());
         values.put(VEGETARIAN, foodItem.getVegetarian() ? 1 : 0);
         values.put(IMAGE_URL, foodItem.getImageUrl());
 
-        db.update(FOOD_TABLE, values, FOOD_ID + "= ?", new String[] { foodItem.getId() });
+        db.update(FOOD_TABLE, values, FOOD_ID + "= ?", new String[] { foodItem.getFid() });
     }
 
     static FoodItem getFoodItem(SQLiteDatabase db, String foodItemId) {
@@ -133,16 +132,16 @@ public class FoodSql {
         int typeIndex = cursor.getColumnIndex(TYPE);
         int descriptionIndex = cursor.getColumnIndex(DESCRIPTION);
         int vegetarianIndex = cursor.getColumnIndex(VEGETARIAN);
-
+        int userIdIndex = cursor.getColumnIndex(FOOD_USER_ID);
         int imageUrlIndex = cursor.getColumnIndex(IMAGE_URL);
 
         FoodItem foodItem = new FoodItem();
-        foodItem.setId(cursor.getString(idIndex));
+        foodItem.setFid(cursor.getString(idIndex));
         foodItem.setName(cursor.getString(nameIndex));
         foodItem.setType(cursor.getString(typeIndex));
         foodItem.setDescription(cursor.getString(descriptionIndex));
         foodItem.setVegetarian(cursor.getInt(vegetarianIndex) == 1);
-
+        foodItem.setUserId(cursor.getString(userIdIndex));
         foodItem.setImageUrl(cursor.getString(imageUrlIndex));
 
         return foodItem;

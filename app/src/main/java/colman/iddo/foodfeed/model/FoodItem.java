@@ -6,7 +6,7 @@ package colman.iddo.foodfeed.model;
 
 public class FoodItem {
 
-    private String id;
+    private String fid;
     private String name;
     private String type;
     private String description;
@@ -16,15 +16,14 @@ public class FoodItem {
     private String imageUrl;
     private double lastUpdateDate;
 
-    public FoodItem(String id, String name, String type, String description, Boolean vegetarian, String imageUrl, String userId, double lastUpdateDate) {
-        this.setId(id);
+    public FoodItem(String fid, String name, String type, String description, Boolean vegetarian, String imageUrl, String userId) {
+        this.setFid(fid);
         this.setName(name);
         this.setType(type);
         this.setDescription(description);
         this.setVegetarian(vegetarian);
         this.setImageUrl(imageUrl);
         this.setUserId(userId);
-        this.setLastUpdateDate(lastUpdateDate);
     }
 
     // Default CTOR, used for initial foods generation
@@ -35,7 +34,7 @@ public class FoodItem {
     public boolean equals(Object obj) {
         if(obj instanceof FoodItem) {
             FoodItem toCompare = (FoodItem) obj;
-            return (this.id.equalsIgnoreCase(toCompare.getId()));
+            return (this.fid.equalsIgnoreCase(toCompare.getFid()));
         }
         return false;
     }
@@ -43,12 +42,12 @@ public class FoodItem {
     /**
      * Getters & Setters
      */
-    public String getId() {
-        return id;
+    public String getFid() {
+        return fid;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setFid(String fid) {
+        this.fid = fid;
     }
 
     public String getName() {

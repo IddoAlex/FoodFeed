@@ -45,12 +45,12 @@ public class FoodEditFragment extends Fragment {
     protected String foodIdString;
 
     // the fragment initialization parameters
-    private static final String FOOD_ID = "FOOD_ID";
+    private static final String FOOD_ID = "fid";
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
-        menu.findItem(R.id.addFoodItemBtn).setVisible(false).setEnabled(false);
-        menu.findItem(R.id.editFoodItemBtn).setVisible(false).setEnabled(false);
+        menu.findItem(R.id.menu_add_food).setVisible(false).setEnabled(false);
+        menu.findItem(R.id.menu_edit_food).setVisible(false).setEnabled(false);
     }
 
     public FoodEditFragment() {
@@ -199,20 +199,17 @@ public class FoodEditFragment extends Fragment {
         backToList();
     }
 
-    public void saveFoodItem(String foodId){
-        String idNew = foodId;
+    public void saveFoodItem(String fid){
+        String fidNew = fid;
         String nameNew = ((EditText) getView().findViewById(R.id.edit_name)).getText().toString();
         String typeNew = ((EditText)getView().findViewById(R.id.edit_type)).getText().toString();
         String descriptionNew = ((EditText)getView().findViewById(R.id.edit_description)).getText().toString();
         Boolean vegetarianNew = ((CheckBox)getView().findViewById(R.id.edit_vegetarian)).isChecked();
         progressBar.setVisibility(View.VISIBLE);
-        final FoodItem foodItemNew = new FoodItem(idNew, nameNew, typeNew, descriptionNew, vegetarianNew, foodItem.getImageUrl(), foodItem.getUserId(), 0);
-        // Note: The last FoodItem's CTOR value (lastUpdateDate) is initiated as 0, as it's value
-        // is necessary to be used only when saving the item in FireBase.
-        // It is done using FoodFirebase's addOrUpdateFoodItem method, by inserting timestamp to it.
+        final FoodItem foodItemNew = new FoodItem(fidNew, nameNew, typeNew, descriptionNew, vegetarianNew, foodItem.getImageUrl(), foodItem.getUserId());
 
         if (imageBitmap != null) {
-            FoodItemModel.instance.saveImage(imageBitmap, foodItemNew.getId() + ".jpeg", new FoodItemModel.SaveImageListener() {
+            FoodItemModel.instance.saveImage(imageBitmap, foodItemNew.getFid() + ".jpeg", new FoodItemModel.SaveImageListener() {
                 @Override
                 public void complete(String url) {
                     foodItemNew.setImageUrl(url);

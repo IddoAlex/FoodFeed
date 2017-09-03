@@ -15,15 +15,6 @@ import colman.iddo.foodfeed.fragments.FoodNewFragment;
 
 public class BaseActivity extends Activity {
 
-
-    String foodIdString;
-
-    public interface ImageListener{
-        void sendImageOnResult(Bundle extras);
-    }
-
-
-    // TODO?: Remove ProgressDialog
     private ProgressDialog mProgressDialog;
     private String _loadingString = "Loading...";
 

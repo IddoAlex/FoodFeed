@@ -1,6 +1,7 @@
 package colman.iddo.foodfeed.fragments;
 
 import android.app.Fragment;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,13 +18,18 @@ import colman.iddo.foodfeed.model.FoodItemModel;
 
 public class FoodDetailsFragment extends Fragment {
 
+    // Listenerto update the current FoodId string in the main activity.
+    public interface FoodIdUpdateListener {
+        void updateFoodIdInActivity(String foodId);
+    }
+
     // the fragment initialization parameters
-    private static final String FOOD_ID = "FOOD_ID";
+    private static final String FOOD_ID = "fid";
 
     // fragment's main variables
+    protected FoodIdUpdateListener foodIdUpdateListener;
     protected FoodItem foodItem;
     protected String foodId;
-    protected TextView id;
     protected TextView foodName;
     protected ImageView foodImage;
     protected TextView foodType;
@@ -32,12 +38,22 @@ public class FoodDetailsFragment extends Fragment {
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
-        menu.findItem(R.id.addFoodItemBtn).setVisible(false).setEnabled(false);
-        menu.findItem(R.id.editFoodItemBtn).setVisible(true).setEnabled(true);
+        menu.findItem(R.id.menu_add_food).setVisible(false).setEnabled(false);
+        menu.findItem(R.id.menu_edit_food).setVisible(true).setEnabled(true);
     }
 
     public FoodDetailsFragment() {
         // Required empty public constructor
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof FoodIdUpdateListener)
+            foodIdUpdateListener = (FoodIdUpdateListener) context;
+        else {
+            throw new RuntimeException(context.toString() + " must implement foodIdUpdateListener");
+        }
     }
 
     /**
@@ -46,6 +62,7 @@ public class FoodDetailsFragment extends Fragment {
      */
     public static FoodDetailsFragment newInstance(String foodId) {
         FoodDetailsFragment fragment = new FoodDetailsFragment();
+
         Bundle args = new Bundle();
         args.putString(FOOD_ID, foodId);
         fragment.setArguments(args);
@@ -68,7 +85,7 @@ public class FoodDetailsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Log.d("DETAILS", "FoodDetailsFragment onCreateView");
-        Log.d("DETAILS", "Passed foodItem id = " + foodItem.getId());
+        Log.d("DETAILS", "Passed foodItem id = " + foodItem.getFid());
 
         // Inflate the layout for this fragment
         View contentView = inflater.inflate(R.layout.fragment_food_details, container, false);
@@ -78,8 +95,11 @@ public class FoodDetailsFragment extends Fragment {
 
         if (myBundle != null){
             foodId = myBundle.getString(FOOD_ID);
+            foodIdUpdateListener.updateFoodIdInActivity(foodId);
             foodItem = FoodItemModel.instance.getFoodItem(foodId);
-            foodType = contentView.findViewById(R.id.details_food_type);
+
+            foodName = (TextView) contentView.findViewById(R.id.details_food_name);
+            foodType = (TextView) contentView.findViewById(R.id.details_food_type);
             vegetarian = (ImageView) contentView.findViewById(R.id.details_food_vegetarian);
             description = (TextView) contentView.findViewById(R.id.details_food_description);
             foodImage = (ImageView) contentView.findViewById(R.id.details_food_image);

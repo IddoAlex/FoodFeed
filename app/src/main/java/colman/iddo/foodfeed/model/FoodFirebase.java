@@ -42,7 +42,7 @@ public class FoodFirebase {
     private final String TAG = "FoodFirebase";
 
     static final String FOOD_TABLE = "foodItems";
-    static final String FOOD_ID = "foodId";
+    static final String FOOD_ID = "fid";
     static final String NAME = "name";
     static final String TYPE = "type";
     static final String DESCRIPTION = "description";
@@ -56,7 +56,7 @@ public class FoodFirebase {
         DatabaseReference myRef = database.getReference(FOOD_TABLE);
 
         Map<String, Object> value = new HashMap<>();
-        value.put(FOOD_ID, foodItem.getId());
+        value.put(FOOD_ID, foodItem.getFid());
         value.put(NAME, foodItem.getName());
         value.put(TYPE, foodItem.getType());
         value.put(DESCRIPTION, foodItem.getDescription());
@@ -65,13 +65,13 @@ public class FoodFirebase {
         value.put(USER_ID, foodItem.getUserId());
         value.put(FOOD_LAST_UPDATE_DATE, ServerValue.TIMESTAMP);
 
-        myRef.child(foodItem.getId()).setValue(value);
+        myRef.child(foodItem.getFid()).setValue(value);
     }
 
-    public void getFoodItem(String foodId, final GetFoodItemCallback callback) {
+    public void getFoodItem(String id, final GetFoodItemCallback callback) {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference(FOOD_TABLE);
-        myRef.child(foodId).addListenerForSingleValueEvent(new ValueEventListener() {
+        myRef.child(id).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 FoodItem food = dataSnapshot.getValue(FoodItem.class);
@@ -85,10 +85,10 @@ public class FoodFirebase {
         });
     }
 
-    public void deleteFoodItem(String foodId) {
+    public void deleteFoodItem(String id) {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference(FOOD_TABLE);
-        myRef.child(foodId).removeValue();
+        myRef.child(id).removeValue();
     }
 
     public void getAllFoodItemsAndObserve(double lastUpdateDate,
