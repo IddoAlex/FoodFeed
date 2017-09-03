@@ -70,6 +70,18 @@ public class FoodItemsListFragment extends Fragment {
     }
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        listFragmentListener = null;
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
@@ -77,7 +89,6 @@ public class FoodItemsListFragment extends Fragment {
         View contentView = inflater.inflate(R.layout.fragment_food_list, container, false);
 
         // Initiate data and view
-
         list = (ListView) contentView.findViewById(R.id.foodItemsList);
         adapter = new FoodItemsAdapter();
         list.setAdapter(adapter);
@@ -120,23 +131,9 @@ public class FoodItemsListFragment extends Fragment {
         return contentView;
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        Log.d("CHECK", "FoodItemsListFragment: onActivityResult");
-
-        if (requestCode == REQUEST_ADD_ID){
-            if (resultCode == FoodNewFragment.RESULT_SUCCESS){
-                //operation success
-                Log.d("TAG","operation success");
-            }else{
-                Log.d("TAG","operation fail");
-            }
-        }else{
-            if (resultCode == REQUEST_WRITE_STORAGE){
-                Log.d("TAG", "REQUEST_WRITE_STORAGE");
-            }
-        }
+    public static FoodItemsListFragment newInstance() {
+        FoodItemsListFragment fragment = new FoodItemsListFragment();
+        return fragment;
     }
 
     @Override
