@@ -25,23 +25,18 @@ public class MainActivity extends BaseActivity implements FoodDetailsFragment.Fo
     private final String TAG = "MainActivity";
     private final String OPTIONS_MENU_TAG = "OptionsMenuTag";
 
-    FoodItemsListFragment foodItemsListFragment;
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
         context = getApplicationContext();
 
-        setContentView(R.layout.activity_main);
-        getActionBar().setDisplayHomeAsUpEnabled(false);
-
-        foodItemsListFragment = new FoodItemsListFragment();
-
-        FragmentTransaction tran = getFragmentManager().beginTransaction();
-        tran.add(R.id.main_fragment_container, foodItemsListFragment, "tag");
-        tran.show(foodItemsListFragment);
-        tran.commit();
+        if (savedInstanceState == null) {
+            FoodItemsListFragment foodItemsListFragment = FoodItemsListFragment.newInstance();
+            FragmentTransaction tran = getFragmentManager().beginTransaction();
+            tran.add(R.id.main_fragment_container, foodItemsListFragment);
+            tran.commit();
+        }
     }
 
     @Override
@@ -123,6 +118,7 @@ public class MainActivity extends BaseActivity implements FoodDetailsFragment.Fo
     public void onFoodItemSelected(String foodId) {
         Log.d("MAIN", "FoodId selected " + foodId);
         foodIdString = foodId;
+
         FoodDetailsFragment foodDetailsFragment = FoodDetailsFragment.newInstance(foodId);
         FragmentTransaction tran = getFragmentManager().beginTransaction();
         tran.replace(R.id.main_fragment_container, foodDetailsFragment);
