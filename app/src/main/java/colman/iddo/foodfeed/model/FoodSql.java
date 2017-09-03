@@ -81,7 +81,7 @@ public class FoodSql {
     }
 
     static protected void deleteFoodItem(SQLiteDatabase db, String foodItemId) {
-        db.delete(FOOD_TABLE, FOOD_ID + "=" + foodItemId, null);
+        db.delete(FOOD_TABLE, "" + FOOD_ID + " = ? ", new String[] { foodItemId });
     }
 
     static boolean checkIfIdAlreadyExists(SQLiteDatabase db, String foodItemId) {

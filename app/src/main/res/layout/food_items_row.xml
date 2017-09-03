@@ -39,7 +39,7 @@
             android:id="@+id/row_food_image"
             android:layout_width="match_parent"
             android:layout_height="200dp"
-            android:src="@drawable/dish" />
+            android:src="@drawable/avatar" />
 
         <ProgressBar
             android:id="@+id/row_food_progressbar"

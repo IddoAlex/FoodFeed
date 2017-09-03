@@ -14,7 +14,7 @@
             android:id="@+id/edit_image"
             android:layout_width="match_parent"
             android:layout_height="200dp"
-            android:src="@drawable/dish" />
+            android:src="@drawable/avatar" />
 
         <ProgressBar
             android:id="@+id/edit_progressbar"

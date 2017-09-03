@@ -124,6 +124,7 @@ public class FoodNewFragment extends FoodEditFragment {
         }
     }
 
-
-
+    protected void backToList(){
+        getFragmentManager().popBackStack();
+    }
 }

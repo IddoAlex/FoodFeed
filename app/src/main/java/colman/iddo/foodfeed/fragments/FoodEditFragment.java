@@ -2,6 +2,7 @@ package colman.iddo.foodfeed.fragments;
 
 import android.app.AlertDialog;
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -248,7 +249,7 @@ public class FoodEditFragment extends Fragment {
     }
 
     protected void backToList(){
-        getFragmentManager().popBackStack();
+        getFragmentManager().popBackStack(0,  FragmentManager.POP_BACK_STACK_INCLUSIVE);
     }
 
 }

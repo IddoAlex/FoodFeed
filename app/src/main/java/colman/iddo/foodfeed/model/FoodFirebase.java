@@ -49,7 +49,7 @@ public class FoodFirebase {
     static final String VEGETARIAN = "vegetarian";
     static final String IMAGE_URL = "imageURL";
     static final String USER_ID = "userId";
-    static final String FOOD_LAST_UPDATE_DATE = "lasUpdateDate";
+    static final String FOOD_LAST_UPDATE_DATE = "lastUpdateDate";
 
     public void addOrUpdateFoodItem(FoodItem foodItem) {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
