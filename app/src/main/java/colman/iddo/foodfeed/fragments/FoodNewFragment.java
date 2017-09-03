@@ -1,6 +1,12 @@
 package colman.iddo.foodfeed.fragments;
 
+import android.app.AlertDialog;
+import android.app.Fragment;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +16,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import java.util.UUID;
 
@@ -18,9 +25,26 @@ import colman.iddo.foodfeed.model.AuthFirebase;
 import colman.iddo.foodfeed.model.FoodItem;
 import colman.iddo.foodfeed.model.FoodItemModel;
 
+import static android.app.Activity.RESULT_OK;
 import static android.view.View.GONE;
 
-public class FoodNewFragment extends FoodEditFragment {
+public class FoodNewFragment extends Fragment {
+
+    public static final int REQUEST_IMAGE_CAPTURE = 1;
+    public final static int RESULT_SUCCESS = 0;
+    public final static int RESULT_FAIL = 1;
+
+    protected FoodItem foodItem;
+    protected ProgressBar progressBar;
+
+    protected TextView foodName;
+    protected ImageView foodImage;
+    protected TextView foodType;
+    protected CheckBox vegetarian;
+    protected TextView description;
+
+    protected Bitmap imageBitmap;
+    protected String foodIdString;
 
     public FoodNewFragment() {
         // Required empty public constructor
@@ -65,8 +89,7 @@ public class FoodNewFragment extends FoodEditFragment {
         foodImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                showImageSelectionMenu();
+                dispatchTakePictureIntent();
             }
         });
 
@@ -126,5 +149,36 @@ public class FoodNewFragment extends FoodEditFragment {
 
     protected void backToList(){
         getFragmentManager().popBackStack();
+    }
+
+
+    protected void dispatchTakePictureIntent() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            Bundle extras = data.getExtras();
+            imageBitmap = (Bitmap) extras.get("data");
+            foodImage.setImageBitmap(imageBitmap);
+        }
+    }
+
+    protected void showMessage(String title, String message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+        builder.setTitle(title);
+        builder.setMessage(message);
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Log.d("TAG", "OK");
+            }
+        });
+        builder.show();
     }
 }

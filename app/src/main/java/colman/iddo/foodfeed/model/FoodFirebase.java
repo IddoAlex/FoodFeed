@@ -47,7 +47,7 @@ public class FoodFirebase {
     static final String TYPE = "type";
     static final String DESCRIPTION = "description";
     static final String VEGETARIAN = "vegetarian";
-    static final String IMAGE_URL = "imageURL";
+    static final String IMAGE_URL = "imageUrl";
     static final String USER_ID = "userId";
     static final String FOOD_LAST_UPDATE_DATE = "lastUpdateDate";
 

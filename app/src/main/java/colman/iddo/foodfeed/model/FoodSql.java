@@ -19,7 +19,7 @@ public class FoodSql {
     static final String TYPE = "type";
     static final String DESCRIPTION = "description";
     static final String VEGETARIAN = "vegetarian";
-    static final String IMAGE_URL = "imageURL";
+    static final String IMAGE_URL = "imageUrl";
     static final String FOOD_USER_ID = "userId";
 
     static List<FoodItem> getAllFoodItems(SQLiteDatabase db) {

@@ -132,7 +132,7 @@ public class FoodEditFragment extends Fragment {
         foodImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showImageSelectionMenu();
+                dispatchTakePictureIntent();
             }
         });
         saveBtn.setOnClickListener(new View.OnClickListener() {
@@ -157,25 +157,6 @@ public class FoodEditFragment extends Fragment {
             }
         });
         return contentView;
-    }
-
-    protected void showImageSelectionMenu() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle(R.string.img_dialog_title)
-                .setItems(R.array.images_menu,
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                switch (which){
-                                    case 0: // camera
-                                        dispatchTakePictureIntent();
-                                        break;
-                                    case 1: // gallery
-                                        break;
-                                }
-                            }
-                        });
-        AlertDialog alertDialog = builder.create();
-        alertDialog.show();
     }
 
     protected void dispatchTakePictureIntent() {
