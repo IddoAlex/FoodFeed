@@ -61,6 +61,7 @@ public class FoodSql {
         values.put(TYPE, foodItem.getType());
         values.put(DESCRIPTION, foodItem.getDescription());
         values.put(VEGETARIAN, foodItem.getVegetarian() ? 1 : 0);
+        values.put(FOOD_USER_ID, foodItem.getUserId());
         values.put(IMAGE_URL, foodItem.getImageUrl());
 
         db.update(FOOD_TABLE, values, FOOD_ID + "= ?", new String[] { foodItem.getFid() });
